@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>Page not found</title>
+<style>body{font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f4f4f4}
+.box{text-align:center}h1{font-size:72px;margin:0;color:#667eea}a{color:#764ba2}</style></head>
+<body><div class="box"><h1>404</h1><p>We couldn't find that page.</p>
+<a href="<%= (typeof user !== 'undefined' && user && user.role === 'student') ? '/student-dashboard' : '/dashboard' %>">Back to dashboard</a></div></body></html>

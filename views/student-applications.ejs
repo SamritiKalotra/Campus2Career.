@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - Campus2Career</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h2><i class="fas fa-graduation-cap"></i> Student Portal</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="/student-dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/student-internships"><i class="fas fa-briefcase"></i> <span>Browse Jobs</span></a></li>
+                    <li><a href="/student-applications" class="active"><i class="fas fa-file-alt"></i> <span>My Applications</span></a></li>
+                    <li><a href="/student-profile"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span><%= user.name %></span>
+                </div>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-secondary small">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3>Navigation</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="/student-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="/student-internships"><i class="fas fa-search"></i> Find Internships</a></li>
+                        <li><a href="/student-applications" class="active"><i class="fas fa-file-alt"></i> My Applications</a></li>
+                        <li><a href="/student-profile"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+                        <li><a href="/blogs"> <i class="fas fa-lightbulb"></i>Tech Blogs</a></li>
+                        <li><a href="/news"> <i class="fas fa-newspaper"></i>Latest News</a></li> 
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Application Stats</h3>
+                    <div class="quick-stats">
+                        <div class="quick-stat">
+                            <span class="stat-label">Total</span>
+                            <span class="stat-number"><%= applications.length %></span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="stat-label">Pending</span>
+                            <span class="stat-number"><%= applications.filter(app => app.status === 'pending').length %></span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="stat-label">Shortlisted</span>
+                            <span class="stat-number"><%= applications.filter(app => app.status === 'shortlisted').length %></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-card">
+                    <h4>Application Tips</h4>
+                    <p>Follow up on pending applications after a week.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-file-alt"></i> My Applications</h1>
+                <p>Track the status of all your internship applications</p>
+            </div>
+
+            <!-- Filter Section -->
+            <section class="filters-section">
+                <div class="filter-group">
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="shortlisted">Shortlisted</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    <input type="text" id="searchApplications" placeholder="Search applications...">
+                </div>
+            </section>
+
+            <!-- Applications Section -->
+            <section class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-history"></i> Application History</h2>
+                    <a href="/student-internships" class="btn-primary">
+                        <i class="fas fa-plus"></i> Apply to More
+                    </a>
+                </div>
+
+                <% if (applications.length > 0) { %>
+                <div class="applicants-grid">
+                    <% applications.forEach(app => { %>
+                    <div class="applicant-card application-card" data-status="<%= app.status %>">
+                        <div class="applicant-header">
+                            <div class="applicant-info">
+                                <h3><%= app.internshipTitle %></h3>
+                                <p><%= app.internshipDepartment %> • <%= app.internshipLocation || 'Location not specified' %></p>
+                            </div>
+                            <span class="status-badge <%= app.status %>"><%= app.status %></span>
+                        </div>
+                        
+                        <div class="application-details">
+                            <div class="detail-row">
+                                <i class="fas fa-calendar"></i>
+                                <span>Applied on <%= new Date(app.appliedDate).toLocaleDateString() %></span>
+                            </div>
+                            <div class="detail-row">
+                                <i class="fas fa-clock"></i>
+                                <span>Duration: <%= app.internshipDuration || 'Not specified' %></span>
+                            </div>
+                            <% if (app.reviewedAt) { %>
+                            <div class="detail-row">
+                                <i class="fas fa-eye"></i>
+                                <span>Reviewed on <%= new Date(app.reviewedAt).toLocaleDateString() %></span>
+                            </div>
+                            <% } %>
+                        </div>
+
+                        <% if (app.coverLetter) { %>
+                        <div class="cover-letter-preview">
+                            <h4>Your Cover Letter:</h4>
+                            <p><%= app.coverLetter.substring(0, 150) %>...</p>
+                        </div>
+                        <% } %>
+                        
+                        <div class="applicant-actions">
+                            <!-- Change these lines in student-applications.ejs -->
+
+<!-- <h3><%= app.internshipId?.title %></h3>
+<p><%= app.internshipId?.department %> • <%= app.internshipId?.location || 'Location not specified' %></p>
+
+<span>Duration: <%= app.internshipId?.duration || 'Not specified' %></span> -->
+
+<a href="/student-internships/<%= app.internshipId?._id %>"class="btn-secondary small">
+    <i class="fas fa-eye"></i> View Job
+</a>
+                            <!-- <a href="/student-internships/<%= app.internshipId %>" class="btn-secondary small">
+                                <i class="fas fa-eye"></i> View Job
+                            </a> -->
+                            <% if (app.status === 'shortlisted') { %>
+                            <span class="btn-success small">
+                                <i class="fas fa-star"></i> Congratulations!
+                            </span>
+                            <% } else if (app.status === 'pending') { %>
+                            <span class="btn-warning small">
+                                <i class="fas fa-hourglass-half"></i> Under Review
+                            </span>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+                <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3>No Applications Yet</h3>
+                    <p>You haven't applied to any internships yet. Start browsing and applying to opportunities!</p>
+                    <a href="/student-internships" class="btn-primary">
+                        <i class="fas fa-search"></i> Browse Internships
+                    </a>
+                </div>
+                <% } %>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Filter applications by status
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            const selectedStatus = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.application-card');
+            
+            cards.forEach(card => {
+                const cardStatus = card.dataset.status;
+                if (selectedStatus === '' || cardStatus === selectedStatus) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Search applications
+        document.getElementById('searchApplications').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.application-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const department = card.querySelector('.applicant-info p').textContent.toLowerCase();
+                
+                if (searchTerm === '' || title.includes(searchTerm) || department.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    <script src="/main.js"></script>
+</body>
+</html>

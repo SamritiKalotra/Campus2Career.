@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Portal - Company Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h2><i class="fas fa-building"></i> Campus2Career</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="/post-internship"><i class="fas fa-plus-circle"></i> Post Internship</a></li>
+                    <li><a href="/applicants"><i class="fas fa-users"></i> Applicants</a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <span>Company Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div>
+                    <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-secondary small">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+                </div>
+            </div>
+        </div>
+    </header>

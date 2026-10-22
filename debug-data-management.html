@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Data Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .btn { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        #debugLog { background: #f8f9fa; padding: 10px; height: 200px; overflow-y: scroll; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Debug Data Management Functions</h1>
+    
+    <div class="debug-section">
+        <h3>Test Export Data</h3>
+        <button class="btn btn-primary" onclick="testExport('json')">Test JSON Export</button>
+        <button class="btn btn-primary" onclick="testExport('csv')">Test CSV Export</button>
+    </div>
+
+    <div class="debug-section">
+        <h3>Test Backup Settings</h3>
+        <button class="btn btn-secondary" onclick="testBackup()">Test Backup Download</button>
+    </div>
+
+    <div class="debug-section">
+        <h3>Test Reset Settings</h3>
+        <button class="btn btn-danger" onclick="testReset()">Test Reset (with confirmation)</button>
+    </div>
+
+    <div class="debug-section">
+        <h3>Debug Log</h3>
+        <div id="debugLog"></div>
+        <button class="btn btn-secondary" onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('debugLog');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        async function testExport(format) {
+            log(`Starting ${format} export test...`);
+            
+            try {
+                const response = await fetch(`/api/analytics/export?format=${format}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': format === 'json' ? 'application/json' : 'text/csv'
+                    }
+                });
+
+                log(`Response status: ${response.status}`);
+                log(`Response headers: ${JSON.stringify([...response.headers.entries()])}`);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`Error response: ${errorText}`);
+                    return;
+                }
+
+                const contentDisposition = response.headers.get('Content-Disposition');
+                log(`Content-Disposition: ${contentDisposition}`);
+
+                const blob = await response.blob();
+                log(`Blob size: ${blob.size} bytes`);
+                log(`Blob type: ${blob.type}`);
+
+                // Try to download
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `test-export-${Date.now()}.${format}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                log(`${format} export download initiated successfully`);
+
+            } catch (error) {
+                log(`Export error: ${error.message}`);
+                console.error('Export error:', error);
+            }
+        }
+
+        async function testBackup() {
+            log('Starting backup test...');
+            
+            try {
+                const response = await fetch('/api/settings/backup', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                log(`Response status: ${response.status}`);
+                log(`Response headers: ${JSON.stringify([...response.headers.entries()])}`);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`Error response: ${errorText}`);
+                    return;
+                }
+
+                const contentDisposition = response.headers.get('Content-Disposition');
+                log(`Content-Disposition: ${contentDisposition}`);
+
+                const blob = await response.blob();
+                log(`Blob size: ${blob.size} bytes`);
+                log(`Blob type: ${blob.type}`);
+
+                // Try to download
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `test-backup-${Date.now()}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                log('Backup download initiated successfully');
+
+            } catch (error) {
+                log(`Backup error: ${error.message}`);
+                console.error('Backup error:', error);
+            }
+        }
+
+        async function testReset() {
+            if (!confirm('This will reset all settings. Continue with test?')) {
+                log('Reset test cancelled by user');
+                return;
+            }
+
+            log('Starting reset test...');
+            
+            try {
+                const response = await fetch('/api/settings/reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                log(`Response status: ${response.status}`);
+                log(`Response headers: ${JSON.stringify([...response.headers.entries()])}`);
+
+                const responseText = await response.text();
+                log(`Response body: ${responseText}`);
+
+                let result = {};
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    log(`JSON parse error: ${e.message}`);
+                }
+
+                if (response.ok) {
+                    log('Reset successful!');
+                    log(`Server message: ${result.message || 'No message'}`);
+                } else {
+                    log(`Reset failed with status ${response.status}`);
+                    log(`Error: ${result.message || responseText}`);
+                }
+
+            } catch (error) {
+                log(`Reset error: ${error.message}`);
+                console.error('Reset error:', error);
+            }
+        }
+
+        function clearLog() {
+            document.getElementById('debugLog').innerHTML = '';
+        }
+
+        // Log initial status
+        log('Debug page loaded - ready to test data management functions');
+    </script>
+</body>
+</html>

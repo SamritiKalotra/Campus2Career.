@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus2Career - Signup</title>
+  <link rel="stylesheet" href="/css/style1.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <img src="/images/c2c.jpeg" alt="">
+     <img id="quote" src="/images/quote.jpeg" alt="" height="45px" width="350px" margin-right="40px">
+  </nav>
+
+  <!-- Signup Form -->
+  <div class="signup-wrapper">
+    <div class="signup-box">
+      <h2>Sign up and explore opportunities for free</h2>
+      <p>Connect, grow, and explore opportunities on CampusToCareer.</p>
+
+      <% if (msg) { %>
+        <div class="alert alert-success"><%= msg %></div>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <form action="/signup" method="POST">
+        <input type="text" name="name" placeholder="Full Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <select name="role" required>
+          <option value="">Select Role</option>
+          <option value="student">Student</option>
+          <option value="company">Company</option>
+        </select>
+        <button type="submit" class="btn">Sign up with Email</button>
+      </form>
+
+      <p>Already registered? <a href="/login">Login</a></p>
+    </div>
+     <div class="login-image">
+    <img src="/images/frontimg.jpeg" alt="Campus2Career" />
+  </div>
+  </div>
+ 
+
+</body>
+</html>

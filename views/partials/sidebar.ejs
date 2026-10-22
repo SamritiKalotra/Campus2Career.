@@ -1,0 +1,100 @@
+<!-- <aside class="sidebar">
+    <div class="sidebar-content">
+        <div class="sidebar-section">
+            <h3>Quick Actions</h3>
+            <ul class="sidebar-menu">
+                <li><a href="/" class="<%= typeof page !== 'undefined' && page === 'dashboard' ? 'active' : '' %>">
+                    <i class="fas fa-chart-line"></i> Overview
+                </a></li>
+                <li><a href="/post-internship" class="<%= typeof page !== 'undefined' && page === 'post' ? 'active' : '' %>">
+                    <i class="fas fa-plus-circle"></i> New Internship
+                </a></li>
+                <li><a href="/applicants" class="<%= typeof page !== 'undefined' && page === 'applicants' ? 'active' : '' %>">
+                    <i class="fas fa-users"></i> All Applicants
+                </a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Management</h3>
+            <ul class="sidebar-menu">
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                <li><a href="#"><i class="fas fa-file-alt"></i> Reports</a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="help-card">
+                <h4>Need Help?</h4>
+                <p>Contact our support team for assistance</p>
+                <button class="btn-secondary small">Get Support</button>
+            </div>
+        </div>
+    </div>
+</aside> -->
+<aside class="sidebar">
+    <div class="sidebar-content">
+        <div class="sidebar-section">
+            <h3>Main Navigation</h3>
+            <ul class="sidebar-menu">
+                <li><a href="/" class="<%= typeof page !== 'undefined' && page === 'dashboard' ? 'active' : '' %>">
+                    <i class="fas fa-home"></i> Dashboard
+                </a></li>
+                <li><a href="/post-internship" class="<%= typeof page !== 'undefined' && page === 'post' ? 'active' : '' %>">
+                    <i class="fas fa-plus-circle"></i> Post Internship
+                </a></li>
+                <li><a href="/applicants" class="<%= typeof page !== 'undefined' && page === 'applicants' ? 'active' : '' %>">
+                    <i class="fas fa-users"></i> View Applicants
+                </a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Analytics & Reports</h3>
+            <ul class="sidebar-menu">
+                <li><a href="/analytics" class="<%= typeof page !== 'undefined' && page === 'analytics' ? 'active' : '' %>">
+                    <i class="fas fa-chart-line"></i> Analytics
+                </a></li>
+                <li><a href="/reports" class="<%= typeof page !== 'undefined' && page === 'reports' ? 'active' : '' %>">
+                    <i class="fas fa-file-alt"></i> Reports
+                </a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Management</h3>
+            <ul class="sidebar-menu">
+                <li><a href="/settings" class="<%= typeof page !== 'undefined' && page === 'settings' ? 'active' : '' %>">
+                    <i class="fas fa-cog"></i> Settings
+                </a></li>
+                <li><a href="/support" class="<%= typeof page !== 'undefined' && page === 'support' ? 'active' : '' %>">
+                    <i class="fas fa-headset"></i> Help & Support
+                </a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="help-card">
+                <h4>Quick Stats</h4>
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <span class="stat-number">15</span>
+                        <span class="stat-label">Active Jobs</span>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="stat-number">127</span>
+                        <span class="stat-label">Applications</span>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="stat-number">34</span>
+                        <span class="stat-label">Shortlisted</span>
+                    </div>
+                </div>
+                <button class="btn-secondary small" onclick="window.location.href='/analytics'">
+                    <i class="fas fa-chart-bar"></i> View Analytics
+                </button>
+            </div>
+        </div>
+    </div>
+</aside>

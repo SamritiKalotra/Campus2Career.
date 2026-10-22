@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Internships - Campus2Career</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h2><i class="fas fa-graduation-cap"></i> Campus2Career</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="/student-dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/student-internships" class="active"><i class="fas fa-briefcase"></i> <span>Browse Jobs</span></a></li>
+                    <li><a href="/student-applications"><i class="fas fa-file-alt"></i> <span>My Applications</span></a></li>
+                    <li><a href="/student-profile"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span><%= user.name %></span>
+                </div>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-secondary small">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3>Navigation</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="/student-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="/student-internships" class="active"><i class="fas fa-search"></i> Find Internships</a></li>
+                        <li><a href="/student-applications"><i class="fas fa-file-alt"></i> My Applications</a></li>
+                        <li><a href="/student-profile"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+                        <li><a href="/blogs"> <i class="fas fa-lightbulb"></i>Tech Blogs</a></li>
+                        <li><a href="/news"> <i class="fas fa-newspaper"></i>Latest News</a></li> 
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Quick Filters</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="?filter=tech"><i class="fas fa-laptop-code"></i> Technology</a></li>
+                        <li><a href="?filter=marketing"><i class="fas fa-bullhorn"></i> Marketing</a></li>
+                        <li><a href="?filter=finance"><i class="fas fa-chart-line"></i> Finance</a></li>
+                        <li><a href="?filter=remote"><i class="fas fa-home"></i> Remote</a></li>
+                    </ul>
+                </div>
+
+                <div class="help-card">
+                    <h4>Tips for Success!</h4>
+                    <p>Apply to 3-5 internships weekly for better chances.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-search"></i> Find Your Perfect Internship</h1>
+                <p>Discover amazing internship opportunities and kickstart your career!</p>
+            </div>
+
+            <!-- Filters Section -->
+            <section class="filters-section">
+                <div class="filter-group">
+                    <input type="text" id="searchInput" placeholder="Search internships..." value="<%= searchQuery || '' %>">
+                    
+                    <select id="departmentFilter">
+                        <option value="">All Departments</option>
+                        <option value="technology" <%= selectedDepartment === 'technology' ? 'selected' : '' %>>Technology</option>
+                        <option value="marketing" <%= selectedDepartment === 'marketing' ? 'selected' : '' %>>Marketing</option>
+                        <option value="finance" <%= selectedDepartment === 'finance' ? 'selected' : '' %>>Finance</option>
+                        <option value="hr" <%= selectedDepartment === 'hr' ? 'selected' : '' %>>Human Resources</option>
+                        <option value="design" <%= selectedDepartment === 'design' ? 'selected' : '' %>>Design</option>
+                    </select>
+                    
+                    <select id="locationFilter">
+                        <option value="">All Locations</option>
+                        <option value="remote" <%= selectedLocation === 'remote' ? 'selected' : '' %>>Remote</option>
+                        <option value="new york" <%= selectedLocation === 'new york' ? 'selected' : '' %>>New York</option>
+                        <option value="california" <%= selectedLocation === 'california' ? 'selected' : '' %>>California</option>
+                        <option value="texas" <%= selectedLocation === 'texas' ? 'selected' : '' %>>Texas</option>
+                    </select>
+                    
+                    <button onclick="applyFilters()" class="btn-primary">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </div>
+            </section>
+
+            <!-- Internships Grid -->
+            <section class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-briefcase"></i> Available Internships (<%= internships.length %>)</h2>
+                </div>
+
+                <% if (internships.length > 0) { %>
+                <div class="internships-grid">
+                    <% internships.forEach(internship => { %>
+                    <div class="internship-card" data-department="<%= internship.department.toLowerCase() %>" data-location="<%= internship.location.toLowerCase() %>">
+                        <div class="internship-header">
+                            <div>
+                                <h3><%= internship.title %></h3>
+                                <span class="status-badge <%= internship.status %>"><%= internship.status %></span>
+                            </div>
+                        </div>
+                        
+                        <div class="internship-details">
+                            <p><i class="fas fa-building"></i> <%= internship.department %></p>
+                            <p><i class="fas fa-map-marker-alt"></i> <%= internship.location %></p>
+                            <p><i class="fas fa-clock"></i> <%= internship.duration %></p>
+                            <p><i class="fas fa-dollar-sign"></i> <%= internship.stipend %></p>
+                        </div>
+                        
+                        <div class="internship-description">
+                            <p><%= internship.description.substring(0, 100) %>...</p>
+                        </div>
+                        
+                        <div class="internship-stats">
+                            <span>Posted: <%= new Date(internship.postedDate).toLocaleDateString() %></span>
+                            <span><%= internship.applicationsCount || 0 %> applications</span>
+                        </div>
+                        
+                        <div class="internship-actions">
+                            <a href="/student-internships/<%= internship.id %>" class="btn-secondary small">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <% 
+                            const hasApplied = applications.some(app => app.internshipId === internship.id && app.studentEmail === user.email);
+                            %>
+                            <% if (hasApplied) { %>
+                            <button class="btn-success small" disabled>
+                                <i class="fas fa-check"></i> Applied
+                            </button>
+                            <% } else { %>
+                            <a href="/apply-internship/<%= internship.id %>" class="btn-primary small">
+                                <i class="fas fa-paper-plane"></i> Apply Now
+                            </a>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+                <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>No Internships Found</h3>
+                    <p>Try adjusting your search criteria or check back later for new opportunities.</p>
+                    <button onclick="clearFilters()" class="btn-primary">Clear Filters</button>
+                </div>
+                <% } %>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Filter functionality
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value;
+            const department = document.getElementById('departmentFilter').value;
+            const location = document.getElementById('locationFilter').value;
+            
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (department) params.append('department', department);
+            if (location) params.append('location', location);
+            
+            window.location.href = '/student-internships?' + params.toString();
+        }
+        
+        function clearFilters() {
+            window.location.href = '/student-internships';
+        }
+        
+        // Enter key support for search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+        
+        // Live search functionality
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const searchTerm = this.value.toLowerCase();
+                const cards = document.querySelectorAll('.internship-card');
+                
+                cards.forEach(card => {
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const description = card.querySelector('.internship-description p').textContent.toLowerCase();
+                    const department = card.querySelector('.internship-details p').textContent.toLowerCase();
+                    
+                    if (searchTerm === '' || title.includes(searchTerm) || description.includes(searchTerm) || department.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }, 300);
+        });
+    </script>
+    <script src="/main.js"></script>
+</body>
+</html>

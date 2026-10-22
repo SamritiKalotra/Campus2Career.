@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Blogs - Campus2Career</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ── Page-specific overrides ── */
+
+        /* Header nav active state */
+        .nav a.active { opacity: 1; font-weight: 700; border-bottom: 2px solid rgba(255,255,255,0.8); }
+
+        /* ── Hero ── */
+        .blogs-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 1.5rem;
+            padding: 2.5rem 3rem;
+            margin-bottom: 2rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .blogs-hero-text h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+        .blogs-hero-text p { opacity: .88; font-size: 1rem; }
+        .blogs-hero-icon {
+            font-size: 4rem;
+            opacity: .25;
+            flex-shrink: 0;
+        }
+
+        /* ── Toolbar (search + filters) ── */
+        .blogs-toolbar {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.75rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,.05);
+        }
+        .search-wrap {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        .search-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: .9rem;
+        }
+        .search-wrap input {
+            width: 100%;
+            padding: .65rem .75rem .65rem 2.4rem;
+            border: 1px solid #d1d5db;
+            border-radius: .5rem;
+            font-size: .9rem;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .search-wrap input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,.12);
+        }
+        .filter-tags {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: .45rem 1rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9999px;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: .82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .filter-btn:hover { border-color: #667eea; color: #667eea; }
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        /* ── Stats bar ── */
+        .blogs-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .blogs-stat {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: .75rem;
+            padding: .75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .85rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .blogs-stat i { color: #667eea; }
+        .blogs-stat strong { color: #1e293b; font-size: 1.05rem; }
+
+        /* ── Grid ── */
+        .blogs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ── Card ── */
+        .blog-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform .25s, box-shadow .25s;
+            cursor: pointer;
+        }
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px -5px rgba(0,0,0,.14);
+            border-color: #c7d2fe;
+        }
+        .blog-cover {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: block;
+        }
+        .blog-cover-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,.4);
+            font-size: 3rem;
+        }
+        .blog-body {
+            padding: 1.25rem 1.4rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .blog-tags-row {
+            display: flex;
+            gap: .4rem;
+            flex-wrap: wrap;
+            margin-bottom: .75rem;
+        }
+        .blog-tag {
+            background: #ede9fe;
+            color: #5b21b6;
+            padding: .2rem .65rem;
+            border-radius: 9999px;
+            font-size: .72rem;
+            font-weight: 600;
+        }
+        .blog-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.45;
+            margin-bottom: .6rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .blog-desc {
+            font-size: .85rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: .9rem;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .blog-stats-row {
+            display: flex;
+            gap: 1rem;
+            font-size: .8rem;
+            color: #94a3b8;
+            margin-bottom: .9rem;
+        }
+        .blog-stat-item { display: flex; align-items: center; gap: .3rem; }
+        .blog-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: .9rem;
+            border-top: 1px solid #f1f5f9;
+            font-size: .8rem;
+            color: #94a3b8;
+        }
+        .blog-author {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        .author-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .author-name { color: #475569; font-weight: 600; font-size: .82rem; }
+
+        /* ── Read button ── */
+        .blog-read-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .35rem .85rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-radius: 9999px;
+            font-size: .75rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity .2s;
+        }
+        .blog-read-btn:hover { opacity: .85; }
+
+        /* ── Loading skeleton ── */
+        .skeleton-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .skel { background: linear-gradient(90deg,#f0f4f8 25%,#e2e8f0 50%,#f0f4f8 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .skel-img  { height: 180px; }
+        .skel-body { padding: 1.25rem; display: flex; flex-direction: column; gap: .75rem; }
+        .skel-line { height: .85rem; border-radius: .4rem; }
+        .skel-line.w60 { width: 60%; }
+        .skel-line.w80 { width: 80%; }
+        .skel-line.w40 { width: 40%; }
+
+        /* ── Load more ── */
+        .load-more-wrap { text-align: center; margin: .5rem 0 2rem; }
+
+        /* ── Error banner ── */
+        .blogs-error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            border-radius: .75rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        /* ── Empty state ── */
+        .blogs-empty {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #94a3b8;
+        }
+        .blogs-empty i { font-size: 3rem; margin-bottom: 1rem; color: #cbd5e1; display: block; }
+        .blogs-empty h3 { color: #374151; font-size: 1.1rem; margin-bottom: .4rem; }
+
+        @media (max-width: 768px) {
+            .blogs-grid { grid-template-columns: 1fr; }
+            .blogs-hero { padding: 1.75rem; }
+            .blogs-hero-text h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Header (matches student dashboard) ── -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h2><i class="fas fa-graduation-cap"></i> Campus2Career</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="/student-dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/student-internships"><i class="fas fa-briefcase"></i> <span>Browse Jobs</span></a></li>
+                    <li><a href="/student-applications"><i class="fas fa-file-alt"></i> <span>My Applications</span></a></li>
+                    <li><a href="/student-profile"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+                    <li><a href="/blogs" class="active"><i class="fas fa-rss"></i> <span>Blogs</span></a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="headerUserName">Student</span>
+                </div>
+                <a href="/student-dashboard" class="btn-secondary small">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main layout mirrors student dashboard ── -->
+    <div class="main-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3>Navigation</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="/student-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="/student-internships"><i class="fas fa-search"></i> Find Internships</a></li>
+                        <li><a href="/student-applications"><i class="fas fa-file-alt"></i> My Applications</a></li>
+                        <li><a href="/student-profile"><i class="fas fa-user-edit"></i> My Profile</a></li>
+                        <li><a href="/blogs" class="active"><i class="fas fa-rss"></i> Tech Blogs</a></li>
+                        <li><a href="/news"><i class="fas fa-newspaper"></i> Tech News</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Popular Topics</h3>
+                    <ul class="sidebar-menu" id="sidebarTopics">
+                        <li><a href="#" onclick="filterByTag('javascript');return false;"><i class="fab fa-js-square"></i> JavaScript</a></li>
+                        <li><a href="#" onclick="filterByTag('react');return false;"><i class="fab fa-react"></i> React</a></li>
+                        <li><a href="#" onclick="filterByTag('python');return false;"><i class="fab fa-python"></i> Python</a></li>
+                        <li><a href="#" onclick="filterByTag('webdev');return false;"><i class="fas fa-globe"></i> Web Dev</a></li>
+                        <li><a href="#" onclick="filterByTag('career');return false;"><i class="fas fa-briefcase"></i> Career</a></li>
+                        <li><a href="#" onclick="filterByTag('tutorial');return false;"><i class="fas fa-book"></i> Tutorials</a></li>
+                    </ul>
+                </div>
+
+                <div class="help-card">
+                    <h4><i class="fas fa-lightbulb"></i> Learning Tip</h4>
+                    <p>Read tech blogs daily to stay up-to-date with industry trends!</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ── Main content ── -->
+        <main class="main-content">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <h1><i class="fas fa-rss" style="color:#667eea;"></i> Tech Blog Hub</h1>
+                    <p>Discover the latest articles from the developer community</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="refreshBlogs()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hero Banner -->
+            <div class="blogs-hero">
+                <div class="blogs-hero-text">
+                    <h1>Stay Ahead of the Curve</h1>
+                    <p>Curated tech articles from DEV.to — updated in real time for students like you.</p>
+                </div>
+                <div class="blogs-hero-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+            </div>
+
+            <!-- Stats bar -->
+            <div class="blogs-stats" id="blogsStats" style="display:none;">
+                <div class="blogs-stat">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Showing <strong id="statShowing">0</strong> articles</span>
+                </div>
+                <div class="blogs-stat">
+                    <i class="fas fa-tag"></i>
+                    <span>Topic: <strong id="statTopic">All</strong></span>
+                </div>
+                <div class="blogs-stat">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Updated <strong id="statTime">just now</strong></span>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="blogs-toolbar">
+                <div class="search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search articles by title or topic…">
+                </div>
+                <div class="filter-tags" id="filterTags">
+                    <button class="filter-btn active" data-tag="all">All</button>
+                    <button class="filter-btn" data-tag="javascript">JavaScript</button>
+                    <button class="filter-btn" data-tag="react">React</button>
+                    <button class="filter-btn" data-tag="python">Python</button>
+                    <button class="filter-btn" data-tag="webdev">Web Dev</button>
+                    <button class="filter-btn" data-tag="career">Career</button>
+                    <button class="filter-btn" data-tag="tutorial">Tutorial</button>
+                </div>
+            </div>
+
+            <!-- Error banner -->
+            <div class="blogs-error" id="errorBanner">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorMsg">Something went wrong.</span>
+            </div>
+
+            <!-- Grid -->
+            <div class="blogs-grid" id="blogsGrid">
+                <!-- Skeleton loaders -->
+                <div class="skeleton-card" id="skel1">
+                    <div class="skel skel-img"></div>
+                    <div class="skel-body">
+                        <div class="skel skel-line w40"></div>
+                        <div class="skel skel-line w80"></div>
+                        <div class="skel skel-line w60"></div>
+                        <div class="skel skel-line w80"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card" id="skel2">
+                    <div class="skel skel-img"></div>
+                    <div class="skel-body">
+                        <div class="skel skel-line w40"></div>
+                        <div class="skel skel-line w80"></div>
+                        <div class="skel skel-line w60"></div>
+                        <div class="skel skel-line w80"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card" id="skel3">
+                    <div class="skel skel-img"></div>
+                    <div class="skel-body">
+                        <div class="skel skel-line w40"></div>
+                        <div class="skel skel-line w80"></div>
+                        <div class="skel skel-line w60"></div>
+                        <div class="skel skel-line w80"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <div class="load-more-wrap">
+                <button class="btn-primary" id="loadMoreBtn" style="display:none;">
+                    <i class="fas fa-chevron-down"></i> Load More Articles
+                </button>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // ─── State ───────────────────────────────────────────────────────────
+        let currentPage  = 1;
+        let currentTag   = 'all';
+        let isLoading    = false;
+        let totalLoaded  = 0;
+
+        // ─── DOM refs ─────────────────────────────────────────────────────────
+        const grid       = document.getElementById('blogsGrid');
+        const loadMoreBtn= document.getElementById('loadMoreBtn');
+        const errorBanner= document.getElementById('errorBanner');
+        const errorMsg   = document.getElementById('errorMsg');
+        const statShowing= document.getElementById('statShowing');
+        const statTopic  = document.getElementById('statTopic');
+        const statTime   = document.getElementById('statTime');
+        const statsBar   = document.getElementById('blogsStats');
+
+        // ─── Fetch ────────────────────────────────────────────────────────────
+        async function fetchBlogs(tag = 'all', page = 1, append = false) {
+            if (isLoading) return;
+            isLoading = true;
+            errorBanner.style.display = 'none';
+
+            if (!append) showSkeletons();
+
+            try {
+                let url = `/api/blogs?page=${page}&per_page=9`;
+                if (tag !== 'all') url = `/api/blogs/tag/${tag}?page=${page}&per_page=9`;
+
+                const res  = await fetch(url);
+                const data = await res.json();
+
+                clearSkeletons();
+
+                if (data.success) {
+                    renderBlogs(data.data, append);
+                    updateStats(tag, data.data.length, append);
+                    loadMoreBtn.style.display = data.data.length < 9 ? 'none' : 'inline-flex';
+                } else {
+                    showError(data.message || 'Failed to load articles.');
+                }
+            } catch (err) {
+                clearSkeletons();
+                showError('Could not reach the blog API. Please try again.');
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        // ─── Render ───────────────────────────────────────────────────────────
+        function renderBlogs(blogs, append = false) {
+            if (!append) { grid.innerHTML = ''; totalLoaded = 0; }
+
+            if (blogs.length === 0 && !append) {
+                grid.innerHTML = `
+                    <div class="blogs-empty">
+                        <i class="fas fa-search"></i>
+                        <h3>No articles found</h3>
+                        <p>Try a different tag or search term.</p>
+                    </div>`;
+                return;
+            }
+
+            blogs.forEach(blog => grid.appendChild(createCard(blog)));
+            totalLoaded += blogs.length;
+        }
+
+        function createCard(blog) {
+            const card = document.createElement('div');
+            card.className = 'blog-card fade-in';
+
+            const imgUrl  = blog.cover_image || blog.social_image || '';
+            const desc    = blog.description || 'No description available.';
+            const mins    = blog.reading_time_minutes || 5;
+            const hearts  = blog.public_reactions_count || 0;
+            const comments= blog.comments_count || 0;
+            const tags    = (blog.tag_list || []).slice(0, 3);
+
+            const coverHTML = imgUrl
+                ? `<img src="${escHtml(imgUrl)}" alt="${escHtml(blog.title)}" class="blog-cover"
+                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                   <div class="blog-cover-placeholder" style="display:none;"><i class="fas fa-newspaper"></i></div>`
+                : `<div class="blog-cover-placeholder"><i class="fas fa-newspaper"></i></div>`;
+
+            const tagsHTML = tags.map(t => `<span class="blog-tag">#${escHtml(t)}</span>`).join('');
+
+            const avatarSrc = blog.user?.profile_image_90 || '';
+            const authorName= escHtml(blog.user?.name || 'Unknown');
+
+            card.innerHTML = `
+                ${coverHTML}
+                <div class="blog-body">
+                    <div class="blog-tags-row">${tagsHTML}</div>
+                    <div class="blog-title">${escHtml(blog.title)}</div>
+                    <div class="blog-desc">${escHtml(desc)}</div>
+                    <div class="blog-stats-row">
+                        <span class="blog-stat-item">❤️ ${hearts}</span>
+                        <span class="blog-stat-item">💬 ${comments}</span>
+                        <span class="blog-stat-item"><i class="fas fa-clock"></i> ${mins} min</span>
+                    </div>
+                    <div class="blog-footer">
+                        <div class="blog-author">
+                            ${avatarSrc ? `<img src="${escHtml(avatarSrc)}" class="author-avatar" alt="${authorName}">` : '<i class="fas fa-user-circle" style="font-size:1.4rem;color:#cbd5e1;"></i>'}
+                            <span class="author-name">${authorName}</span>
+                        </div>
+                        <span>${relTime(blog.published_at)}</span>
+                    </div>
+                    <div style="margin-top:.75rem;">
+                        <a href="${escHtml(blog.url)}" target="_blank" class="blog-read-btn">
+                            <i class="fas fa-external-link-alt"></i> Read Article
+                        </a>
+                    </div>
+                </div>`;
+
+            return card;
+        }
+
+        // ─── Skeletons ────────────────────────────────────────────────────────
+        function showSkeletons() {
+            grid.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                grid.innerHTML += `
+                    <div class="skeleton-card">
+                        <div class="skel skel-img"></div>
+                        <div class="skel-body">
+                            <div class="skel skel-line w40"></div>
+                            <div class="skel skel-line w80"></div>
+                            <div class="skel skel-line w60"></div>
+                            <div class="skel skel-line w80"></div>
+                        </div>
+                    </div>`;
+            }
+        }
+        function clearSkeletons() {
+            document.querySelectorAll('.skeleton-card').forEach(s => s.remove());
+        }
+
+        // ─── Stats ────────────────────────────────────────────────────────────
+        function updateStats(tag, count, append) {
+            if (!append) totalLoaded = count; else totalLoaded += count;
+            statShowing.textContent = totalLoaded;
+            statTopic.textContent   = tag === 'all' ? 'All Topics' : tag;
+            statTime.textContent    = 'just now';
+            statsBar.style.display  = 'flex';
+        }
+
+        // ─── Error ───────────────────────────────────────────────────────────
+        function showError(msg) {
+            errorMsg.textContent    = msg;
+            errorBanner.style.display = 'flex';
+            setTimeout(() => { errorBanner.style.display = 'none'; }, 6000);
+        }
+
+        // ─── Helpers ─────────────────────────────────────────────────────────
+        function escHtml(str) {
+            return String(str)
+                .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function relTime(dateStr) {
+            const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+            if (diff < 60)    return 'just now';
+            if (diff < 3600)  return `${Math.floor(diff/60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+            if (diff < 604800)return `${Math.floor(diff/86400)}d ago`;
+            return new Date(dateStr).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+        }
+
+        // ─── Filter buttons ───────────────────────────────────────────────────
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTag  = btn.dataset.tag;
+                currentPage = 1;
+                fetchBlogs(currentTag, currentPage, false);
+            });
+        });
+
+        // Sidebar topic links
+        function filterByTag(tag) {
+            currentTag  = tag;
+            currentPage = 1;
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.tag === tag);
+            });
+            fetchBlogs(tag, 1, false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ─── Search ───────────────────────────────────────────────────────────
+        let searchTimer;
+        document.getElementById('searchInput').addEventListener('input', e => {
+            clearTimeout(searchTimer);
+            const q = e.target.value.trim();
+            searchTimer = setTimeout(async () => {
+                if (q.length > 2) {
+                    try {
+                        showSkeletons();
+                        const res  = await fetch(`/api/blogs/search/query?q=${encodeURIComponent(q)}`);
+                        const data = await res.json();
+                        clearSkeletons();
+                        if (data.success) renderBlogs(data.data, false);
+                        else showError('Search failed.');
+                        loadMoreBtn.style.display = 'none';
+                    } catch { clearSkeletons(); showError('Search request failed.'); }
+                } else if (q.length === 0) {
+                    fetchBlogs(currentTag, 1, false);
+                }
+            }, 450);
+        });
+
+        // ─── Load More ────────────────────────────────────────────────────────
+        loadMoreBtn.addEventListener('click', () => {
+            currentPage++;
+            fetchBlogs(currentTag, currentPage, true);
+        });
+
+        // ─── Refresh ─────────────────────────────────────────────────────────
+        function refreshBlogs() {
+            currentPage = 1;
+            fetchBlogs(currentTag, 1, false);
+        }
+
+        // ─── Init ─────────────────────────────────────────────────────────────
+        fetchBlogs();
+    </script>
+</body>
+</html>

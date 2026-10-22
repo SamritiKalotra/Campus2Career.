@@ -1,0 +1,416 @@
+
+
+<%- include('partials/header') %>
+
+<style>
+    .applicants-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 24px;
+        padding: 8px 0;
+    }
+
+    .applicant-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        transition: box-shadow 0.2s;
+    }
+    .applicant-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+    /* .applicant-card.pending     { border-top: 4px solid #f59e0b; }
+    .applicant-card.shortlisted { border-top: 4px solid #10b981; }
+    .applicant-card.rejected    { border-top: 4px solid #ef4444; } */
+    .applicant-card.pending     { border-top: 4px solid #667eea; }
+.applicant-card.shortlisted { border-top: 4px solid #10b981; }
+.applicant-card.rejected    { border-top: 4px solid #ef4444; }
+
+    .card-profile {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 20px 20px 14px;
+        background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .card-avatar {
+        width: 60px; height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #fff;
+        box-shadow: 0 2px 8px rgba(99,102,241,0.2);
+        flex-shrink: 0;
+    }
+    .card-avatar-placeholder {
+        width: 60px; height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: #fff; font-weight: 700;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+    }
+    .card-profile-info { flex: 1; min-width: 0; }
+    .card-profile-info h3 {
+        margin: 0 0 2px;
+        font-size: 1rem; font-weight: 700;
+        color: #111827;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-email {
+        font-size: 0.78rem; color: #6b7280;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-uni {
+        font-size: 0.8rem; color: #6366f1;
+        font-weight: 500; margin-top: 2px;
+    }
+
+    .status-badge {
+        padding: 4px 12px; border-radius: 99px;
+        font-size: 0.72rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.05em;
+        flex-shrink: 0;
+    }
+    /* .status-badge.pending     { background: #fef3c7; color: #92400e; } */
+    .status-badge.pending     { background: #ede9fe; color: #5b21b6; }
+    .status-badge.shortlisted { background: #d1fae5; color: #065f46; }
+    .status-badge.rejected    { background: #fee2e2; color: #991b1b; }
+
+    .card-body { padding: 16px 20px; }
+
+    .card-meta {
+        display: flex; flex-wrap: wrap; gap: 8px;
+        margin-bottom: 12px;
+    }
+    .card-meta-item {
+        display: flex; align-items: center; gap: 5px;
+        font-size: 0.8rem; color: #6b7280;
+    }
+    .card-meta-item i { color: #9ca3af; font-size: 0.75rem; }
+
+    .card-skills {
+        display: flex; flex-wrap: wrap; gap: 5px;
+        margin-bottom: 12px;
+    }
+    .skill-chip {
+        background: #ede9fe; color: #5b21b6;
+        padding: 3px 10px; border-radius: 99px;
+        font-size: 0.73rem; font-weight: 500;
+    }
+    .skill-chip.more { background: #f3f4f6; color: #6b7280; }
+
+    .card-about {
+        font-size: 0.82rem; color: #4b5563;
+        line-height: 1.55; margin-bottom: 12px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .card-socials { display: flex; gap: 8px; margin-bottom: 12px; }
+    .social-link {
+        display: inline-flex; align-items: center; gap: 4px;
+        font-size: 0.75rem; padding: 3px 10px;
+        border-radius: 99px; text-decoration: none;
+        font-weight: 500; transition: opacity 0.2s;
+    }
+    .social-link:hover { opacity: 0.8; }
+    .social-link.linkedin { background: #e8f0fe; color: #0a66c2; }
+    .social-link.github   { background: #f3f4f6; color: #24292e; }
+
+    .card-internship {
+        background: #f8fafc; border: 1px solid #e2e8f0;
+        border-radius: 8px; padding: 10px 14px;
+        margin-bottom: 12px; font-size: 0.82rem;
+    }
+    .card-internship strong { color: #374151; }
+    .card-internship span   { color: #6b7280; }
+
+    /* .card-cover {
+        background: #fffbeb; border-left: 3px solid #f59e0b;
+        border-radius: 0 6px 6px 0;
+        padding: 8px 12px; margin-bottom: 14px;
+        font-size: 0.8rem; color: #78350f; line-height: 1.5;
+    } */
+
+    .card-cover {
+    background: #f5f3ff; border-left: 3px solid #667eea;
+    border-radius: 0 6px 6px 0;
+    padding: 8px 12px; margin-bottom: 14px;
+    font-size: 0.8rem; color: #4c1d95; line-height: 1.5;
+}
+
+    .card-actions {
+        display: flex; gap: 8px; flex-wrap: wrap;
+        padding: 14px 20px;
+        border-top: 1px solid #f3f4f6;
+        background: #fafafa;
+    }
+    .card-actions button, .card-actions a {
+        flex: 1; min-width: 80px;
+        padding: 8px 12px;
+        border-radius: 8px; border: none;
+        font-size: 0.8rem; font-weight: 600;
+        cursor: pointer; text-align: center;
+        text-decoration: none;
+        display: inline-flex; align-items: center;
+        justify-content: center; gap: 5px;
+        transition: all 0.2s;
+    }
+    .btn-resume    { background: #fee2e2; color: #991b1b; }
+    .btn-resume:hover { background: #fecaca; }
+    .btn-shortlist { background: #d1fae5; color: #065f46; }
+    .btn-shortlist:hover { background: #a7f3d0; }
+    .btn-reject    { background: #fee2e2; color: #991b1b; }
+    .btn-reject:hover { background: #fecaca; }
+    .btn-revert    { background: #e0e7ff; color: #3730a3; }
+    .btn-revert:hover { background: #c7d2fe; }
+    .btn-done      { background: #d1fae5; color: #065f46; cursor: default; }
+
+    .filters-section {
+        background: #fff; border: 1px solid #e5e7eb;
+        border-radius: 12px; padding: 16px 20px;
+        margin-bottom: 24px;
+    }
+    .filter-group { display: flex; gap: 12px; flex-wrap: wrap; }
+    .filter-group select, .filter-group input {
+        padding: 8px 14px; border: 1px solid #d1d5db;
+        border-radius: 8px; font-size: 0.88rem;
+        background: #fff; color: #374151;
+    }
+    .filter-group input { flex: 1; min-width: 200px; }
+
+    .empty-state {
+        text-align: center; padding: 60px 20px; color: #9ca3af;
+    }
+    .empty-state i { font-size: 3rem; margin-bottom: 16px; display: block; }
+    .empty-state h3 { color: #374151; margin-bottom: 8px; }
+</style>
+
+<div class="main-container">
+    <%- include('partials/sidebar', { page: 'applicants' }) %>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1><i class="fas fa-users"></i> Internship Applicants</h1>
+            <p>Review student profiles and manage applications</p>
+        </div>
+
+        <div class="filters-section">
+            <div class="filter-group">
+                <select id="statusFilter" onchange="filterCards()">
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="shortlisted">Shortlisted</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <input type="text" id="searchInput"
+                       placeholder="Search by name, email or university..."
+                       oninput="filterCards()">
+            </div>
+        </div>
+
+        <div class="applicants-container">
+            <% if (applications && applications.length > 0) { %>
+                <div class="applicants-grid" id="applicantsGrid">
+                    <% applications.forEach(application => { %>
+                        <div class="applicant-card <%= application.status %>"
+                             data-status="<%= application.status %>"
+                             data-name="<%= (application.studentName || '').toLowerCase() %>"
+                             data-email="<%= (application.studentEmail || '').toLowerCase() %>"
+                             data-uni="<%= (application.university || '').toLowerCase() %>">
+
+                            <!-- Mini Profile Header -->
+                            <div class="card-profile">
+                                <% if (application.profileImage) { %>
+                                    <img src="<%= application.profileImage %>"
+                                         alt="<%= application.studentName %>"
+                                         class="card-avatar">
+                                <% } else { %>
+                                    <div class="card-avatar-placeholder">
+                                        <%= (application.studentName || '?')[0].toUpperCase() %>
+                                    </div>
+                                <% } %>
+
+                                <div class="card-profile-info">
+                                    <h3><%= application.studentName || 'Unknown Student' %></h3>
+                                    <div class="card-email"><%= application.studentEmail %></div>
+                                    <% if (application.university) { %>
+                                        <div class="card-uni">
+                                            <i class="fas fa-university"></i>
+                                            <%= application.university %>
+                                            <% if (application.graduationYear) { %>
+                                                · <%= application.graduationYear %>
+                                            <% } %>
+                                        </div>
+                                    <% } %>
+                                </div>
+
+                                <span class="status-badge <%= application.status %>">
+                                    <%= application.status %>
+                                </span>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="card-body">
+
+                                <div class="card-meta">
+                                    <% if (application.major) { %>
+                                        <span class="card-meta-item">
+                                            <i class="fas fa-graduation-cap"></i>
+                                            <%= application.major %>
+                                        </span>
+                                    <% } %>
+                                    <% if (application.location) { %>
+                                        <span class="card-meta-item">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <%= application.location %>
+                                        </span>
+                                    <% } %>
+                                    <span class="card-meta-item">
+                                        <i class="fas fa-calendar"></i>
+                                        Applied: <%= new Date(application.appliedDate).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+                                    </span>
+                                </div>
+
+                                <% if (application.skills && application.skills.length > 0) { %>
+                                    <div class="card-skills">
+                                        <% application.skills.slice(0, 4).forEach(skill => { %>
+                                            <span class="skill-chip"><%= skill %></span>
+                                        <% }); %>
+                                        <% if (application.skills.length > 4) { %>
+                                            <span class="skill-chip more">
+                                                +<%= application.skills.length - 4 %> more
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+
+                                <% if (application.about) { %>
+                                    <div class="card-about"><%= application.about %></div>
+                                <% } %>
+
+                                <% if (application.linkedin || application.github) { %>
+                                    <div class="card-socials">
+                                        <% if (application.linkedin) { %>
+                                            <a href="<%= application.linkedin %>"
+                                               target="_blank" class="social-link linkedin">
+                                                <i class="fab fa-linkedin"></i> LinkedIn
+                                            </a>
+                                        <% } %>
+                                        <% if (application.github) { %>
+                                            <a href="<%= application.github %>"
+                                               target="_blank" class="social-link github">
+                                                <i class="fab fa-github"></i> GitHub
+                                            </a>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+
+                                <div class="card-internship">
+                                    <strong>
+                                        <i class="fas fa-briefcase"></i>
+                                        <%= application.internshipTitle %>
+                                    </strong>
+                                    <% if (application.internshipDepartment) { %>
+                                        <span> · <%= application.internshipDepartment %></span>
+                                    <% } %>
+                                </div>
+
+                                <div class="card-cover">
+                                    <strong>
+                                        <i class="fas fa-envelope-open-text"></i> Cover Letter:
+                                    </strong>
+                                    <%= application.coverLetter
+                                        ? application.coverLetter.substring(0, 150) +
+                                          (application.coverLetter.length > 150 ? '…' : '')
+                                        : 'No cover letter provided' %>
+                                </div>
+
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="card-actions">
+                                <% if (application.resume) { %>
+                                    <a href="https://docs.google.com/viewer?url=<%= encodeURIComponent(application.resume) %>"
+                                       target="_blank" class="btn-resume">
+                                        <i class="fas fa-file-pdf"></i> View Resume
+                                    </a>
+                                <% } %>
+
+                                <% if (application.status === 'pending') { %>
+                                    <button class="btn-shortlist"
+                                            onclick="updateStatus('<%= application.id %>', 'shortlisted')">
+                                        <i class="fas fa-check"></i> Shortlist
+                                    </button>
+                                    <button class="btn-reject"
+                                            onclick="updateStatus('<%= application.id %>', 'rejected')">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                <% } else if (application.status === 'shortlisted') { %>
+                                    <button class="btn-done" disabled>
+                                        <i class="fas fa-star"></i> Shortlisted
+                                    </button>
+                                    <button class="btn-reject"
+                                            onclick="updateStatus('<%= application.id %>', 'rejected')">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                <% } else { %>
+                                    <button class="btn-revert"
+                                            onclick="updateStatus('<%= application.id %>', 'pending')">
+                                        <i class="fas fa-undo"></i> Revert
+                                    </button>
+                                <% } %>
+                            </div>
+
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-users"></i>
+                    <h3>No applications yet</h3>
+                    <p>Applications will appear here once students start applying</p>
+                </div>
+            <% } %>
+        </div>
+    </main>
+</div>
+
+<%- include('partials/footer') %>
+
+<script>
+    function filterCards() {
+        const status = document.getElementById('statusFilter').value.toLowerCase();
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll('.applicant-card').forEach(card => {
+            const matchStatus = !status || card.dataset.status === status;
+            const matchSearch = !search ||
+                card.dataset.name.includes(search)  ||
+                card.dataset.email.includes(search) ||
+                card.dataset.uni.includes(search);
+            card.style.display = (matchStatus && matchSearch) ? '' : 'none';
+        });
+    }
+
+    async function updateStatus(id, status) {
+        try {
+            const r = await fetch(`/api/applications/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            const data = await r.json();
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Failed to update status. Please try again.');
+            }
+        } catch {
+            alert('Network error. Please try again.');
+        }
+    }
+</script>

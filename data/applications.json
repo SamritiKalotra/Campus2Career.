@@ -1,0 +1,87 @@
+[
+  {
+    "id": "app-1",
+    "internshipId": "internship-1",
+    "studentId": "student-1",
+    "studentName": "John Doe",
+    "studentEmail": "john.doe@email.com",
+    "resume": "john_doe_resume.pdf",
+    "coverLetter": "Passionate about software development...",
+    "appliedDate": "2024-01-16",
+    "status": "pending",
+    "reviewedBy": "6946bccad5fa6ba3d2113707",
+    "reviewedAt": "2025-12-20T15:14:04.493Z"
+  },
+  {
+    "id": "app-2",
+    "internshipId": "internship-1",
+    "studentId": "student-2",
+    "studentName": "Jane Smith",
+    "studentEmail": "jane.smith@email.com",
+    "resume": "jane_smith_resume.pdf",
+    "coverLetter": "Experienced in full-stack development...",
+    "appliedDate": "2024-01-17",
+    "status": "rejected",
+    "reviewedBy": "68d5470cbe0dfffecf6cdbbd",
+    "reviewedAt": "2025-09-25T13:45:27.921Z"
+  },
+  {
+    "id": "8204648f-63f8-4293-89e0-51ea9f242801",
+    "internshipId": "64a5ca96-4a73-48e5-9a86-5fa9f17bbe0b",
+    "studentId": "68d5863f1aa08340929e2e50",
+    "studentName": "shashwat",
+    "studentEmail": "shashwat@gmail.com",
+    "resume": "shashwat_gmail.com_resume.pdf",
+    "coverLetter": "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+    "appliedDate": "2025-09-25",
+    "status": "shortlisted",
+    "reviewedBy": "68d54825be0dfffecf6cdbc1",
+    "reviewedAt": "2025-09-25T18:26:04.288Z"
+  },
+  {
+    "id": "ca3149bb-f0a8-4ec9-b051-982ffd11fef4",
+    "internshipId": "2056a2d3-14c3-48fc-b50e-b1bc2467be95",
+    "studentId": "68ff6c48e56a860903e12621",
+    "studentName": "sejal bajaj",
+    "studentEmail": "sejal@gmail.com",
+    "resume": "sejal_gmail.com_resume.pdf",
+    "coverLetter": "dear sir,\ni am interested ............................................................................",
+    "appliedDate": "2025-10-27",
+    "status": "pending"
+  },
+  {
+    "id": "9442e568-6328-4e44-8816-2ba416472354",
+    "internshipId": "42dcb6cf-43c1-43c4-a464-205b9de3d737",
+    "studentId": "6919974311c97c1371460a5e",
+    "studentName": "manisha",
+    "studentEmail": "manisha0731.be23@chitkara.edu.in",
+    "resume": "manisha0731.be23_chitkara.edu.in_resume.pdf",
+    "coverLetter": "...............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................",
+    "appliedDate": "2025-11-17",
+    "status": "pending"
+  },
+  {
+    "id": "9c9cf1b8-4588-4344-9c63-8a86134defed",
+    "internshipId": "64a5ca96-4a73-48e5-9a86-5fa9f17bbe0b",
+    "studentId": "69457f2f8daa68805c42f55e",
+    "studentName": "sejal bajaj",
+    "studentEmail": "sejal16bajaj@gmail.com",
+    "resume": "sejal16bajaj_gmail.com_resume.pdf",
+    "coverLetter": "hello.........///////////////////////////////////---------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
+    "appliedDate": "2025-12-20",
+    "status": "pending"
+  },
+  {
+    "id": "820a2e3e-b3db-4056-9775-91bc73e21ca3",
+    "internshipId": "59493b90-82ab-4312-8e69-f1279ec5d27b",
+    "studentId": "6948051ca0d61341b971cf04",
+    "studentName": "Sejal Bajaj",
+    "studentEmail": "sejal16bajaj@gmail.com",
+    "resume": "sejal16bajaj_gmail.com_resume.pdf",
+    "coverLetter": "I’m interested in this position because it aligns well with what I’m learning and what I want to build my career in. This role gives me the opportunity to apply my technical knowledge in a practical environment, learn from real-world challenges, and grow professionally while contributing meaningfully to the team.I believe I’m a good fit because I have a solid foundation in programming and web technologies, along with hands-on project experience. I’m a quick learner, consistent, and genuinely curious about improving my skills. I take responsibility for my work, adapt well to new tools and technologies, and enjoy working both independently and in a team. My willingness to learn, combined with my technical background and positive attitude, allows me to add value while continuing to grow in this role.",
+    "appliedDate": "2025-12-21",
+    "status": "shortlisted",
+    "reviewedBy": "69480697a0d61341b971cf0b",
+    "reviewedAt": "2025-12-21T14:52:33.086Z"
+  }
+]

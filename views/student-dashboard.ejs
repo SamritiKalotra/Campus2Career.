@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Campus2Career</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h2><i class="fas fa-graduation-cap"></i> Campus2Career</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="/student-dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/student-internships"><i class="fas fa-briefcase"></i> <span>Browse Jobs</span></a></li>
+                    <li><a href="/student-applications"><i class="fas fa-file-alt"></i> <span>My Applications</span></a></li>
+                    <li><a href="/student-profile"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span><%= user.name %></span>
+                </div>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-secondary small">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3>Navigation</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="/student-dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="/student-internships"><i class="fas fa-search"></i> Find Internships</a></li>
+                        <li><a href="/student-applications"><i class="fas fa-file-alt"></i> My Applications</a></li>
+                        <li><a href="/student-profile"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+                        <li><a href="/blogs"> <i class="fas fa-lightbulb"></i>Tech Blogs</a></li>
+                        <li><a href="/news"> <i class="fas fa-newspaper"></i>Latest News</a></li>                               
+
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Quick Stats</h3>
+                    <div class="quick-stats">
+                        <div class="quick-stat">
+                            <span class="stat-label">Applications</span>
+                            <span class="stat-number"><%= stats.totalApplications %></span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="stat-label">Shortlisted</span>
+                            <span class="stat-number"><%= stats.shortlisted %></span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="stat-label">Pending</span>
+                            <span class="stat-number"><%= stats.pending %></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-card">
+                    <h4>Need Help?</h4>
+                    <p>Check our guide on writing great applications!</p>
+                    <a href="#" class="btn-secondary small">View Guide</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h1>Welcome back, <%= user.name %>!</h1>
+                    <!-- <h1>Welcome back, <%= user.email.split('@')[0] %>!</h1> -->
+                    <p>Ready to find your next internship opportunity? Explore available positions and track your applications.</p>
+                </div>
+                <div class="hero-image">
+  <img src="/images/student-dashboard.jpeg" alt="Student Dashboard">
+</div>
+
+            </section>
+
+            <!-- Stats Grid -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= stats.totalApplications %></h3>
+                        <p>Total Applications</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= stats.shortlisted %></h3>
+                        <p>Shortlisted</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= stats.pending %></h3>
+                        <p>Pending Review</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= availableInternships %></h3>
+                        <p>Available Positions</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Applications -->
+            <section class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-history"></i> Recent Applications</h2>
+                    <a href="/student-applications" class="btn-primary">View All Applications</a>
+                </div>
+
+                <% if (recentApplications.length > 0) { %>
+                <div class="applicants-grid">
+                    <% recentApplications.forEach(app => { %>
+                    <div class="applicant-card">
+                        <div class="applicant-header">
+                            <div class="applicant-info">
+                                <h3><%= app.internshipTitle %></h3>
+                                <p><%= app.internshipDepartment %></p>
+                            </div>
+                            <span class="status-badge <%= app.status %>"><%= app.status %></span>
+                        </div>
+                        
+                        <div class="application-details">
+                            <div class="detail-row">
+                                <i class="fas fa-calendar"></i>
+                                <span>Applied on <%= new Date(app.appliedDate).toLocaleDateString() %></span>
+                            </div>
+                            <% if (app.status === 'shortlisted') { %>
+                            <div class="detail-row">
+                                <i class="fas fa-star text-success"></i>
+                                <span>Congratulations! You've been shortlisted</span>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+                <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3>No Applications Yet</h3>
+                    <p>Start applying to internships to see your application history here.</p>
+                    <a href="/student-internships" class="btn-primary">Browse Internships</a>
+                </div>
+                <% } %>
+            </section>
+<br>
+            <!-- Available Internships -->
+            <section class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-briefcase"></i> Latest Opportunities</h2>
+                    <a href="/student-internships" class="btn-primary">View All Internships</a>
+                </div>
+
+                <div class="internships-grid">
+                    <% latestInternships.forEach(internship => { %>
+                    <div class="internship-card">
+                        <div class="internship-header">
+                            <div>
+                                <h3><%= internship.title %></h3>
+                                <span class="status-badge active"><%= internship.status %></span>
+                            </div>
+                        </div>
+                        
+                        <div class="internship-details">
+                            <p><i class="fas fa-building"></i> <%= internship.department %></p>
+                            <p><i class="fas fa-map-marker-alt"></i> <%= internship.location %></p>
+                            <p><i class="fas fa-clock"></i> <%= internship.duration %></p>
+                            <p><i class="fas fa-dollar-sign"></i> <%= internship.stipend %></p>
+                        </div>
+                        
+                        <div class="internship-stats">
+                            <span>Posted: <%= new Date(internship.postedDate).toLocaleDateString() %></span>
+                        </div>
+                        
+                        <div class="internship-actions">
+                            <a href="/student-internships/<%= internship.id %>" class="btn-primary small">View Details</a>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/main.js"></script>
+</body>
+</html>

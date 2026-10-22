@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusToCareer - Login</title>
+  <link rel="stylesheet" href="/css/style1.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <!-- <div class="nav-container">
+      <h1 class="logo">Campus2Career</h1>
+    </div> -->
+    <img src="/images/c2c.jpeg" alt="">
+    <!-- <img id="quote" src="/images/quote.jpeg" alt="" height="45px" width="350px" margin-right="40px"> -->
+     <div class="typewriter-container">
+  <div class="typewriter-text">
+    <span id="typed-text"></span><span class="cursor"></span>
+  </div>
+</div>
+  </nav>
+  
+
+
+  <!-- Login Form -->
+  <div class="signup-wrapper">
+    <div class="signup-box">
+      <h2>Login to your account</h2>
+      <p>Connect, grow, and explore opportunities on Campus2Career.</p>
+
+      <% if (msg) { %>
+        <div class="alert alert-success"><%= msg %></div>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <form action="/login" method="POST">
+        <input type="hidden" name="debugTest" value="login-form">
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit" class="btn">Login</button>
+      </form>
+
+      <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+    </div>
+    <div class="login-image">
+    <img src="/images/frontimg.jpeg" alt="Campus2Career" />
+  </div>
+  </div>
+
+</body>
+<script>
+  const quotes = [
+    "Your career journey starts here",
+    "Build your future, one challenge at a time",
+    "Transform ambition into achievement"
+  ];
+
+  let quoteIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+  const typedTextElement = document.getElementById('typed-text');
+
+  function typeWriter() {
+    const currentQuote = quotes[quoteIndex];
+    
+    if (isDeleting) {
+      typedTextElement.textContent = currentQuote.substring(0, charIndex - 1);
+      charIndex--;
+      
+      if (charIndex === 0) {
+        isDeleting = false;
+        quoteIndex = (quoteIndex + 1) % quotes.length;
+        setTimeout(typeWriter, 500);
+        return;
+      }
+      setTimeout(typeWriter, 50);
+    } else {
+      typedTextElement.textContent = currentQuote.substring(0, charIndex + 1);
+      charIndex++;
+      
+      if (charIndex === currentQuote.length) {
+        isDeleting = true;
+        setTimeout(typeWriter, 2000);
+        return;
+      }
+      setTimeout(typeWriter, 100);
+    }
+  }
+
+  typeWriter();
+</script>
+</html>

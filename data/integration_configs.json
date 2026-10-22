@@ -1,0 +1,20 @@
+{
+  "googleWorkspace": {
+    "clientId": "111",
+    "clientSecret": "11",
+    "webhookUrl": "https://www.zauca.com/?msclkid=cd07c5bed6051c6740a8ad0521b4cdea",
+    "updatedAt": "2025-09-15T13:40:44.804Z"
+  },
+  "slack": {
+    "clientId": "111",
+    "clientSecret": "11",
+    "webhookUrl": "https://www.zauca.com/?msclkid=cd07c5bed6051c6740a8ad0521b4cdea",
+    "updatedAt": "2025-09-07T09:53:19.538Z"
+  },
+  "teams": {
+    "clientId": "111",
+    "clientSecret": "11",
+    "webhookUrl": "",
+    "updatedAt": "2025-09-07T10:20:43.771Z"
+  }
+}

@@ -1,0 +1,1025 @@
+<%- include('partials/header') %>
+
+<div class="main-container">
+    <%- include('partials/sidebar', { page: 'analytics' }) %>
+    
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Analytics Dashboard</h1>
+            <p>Comprehensive insights into your internship program performance</p>
+            <div class="header-actions">
+                <button class="btn-secondary" onclick="refreshAnalytics()">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+                <button class="btn-primary" onclick="exportReport()">
+                    <i class="fas fa-download"></i> Export Report
+                </button>
+            </div>
+        </div>
+
+        <!-- Key Metrics Overview -->
+        <div class="analytics-summary">
+            <div class="metric-card primary">
+                <div class="metric-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="totalInternships"><%= analytics.summary.totalInternships %></h3>
+                    <p>Total Internships</p>
+                    <span class="metric-change positive">+12% this month</span>
+                </div>
+            </div>
+            
+            <div class="metric-card success">
+                <div class="metric-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="totalApplications"><%= analytics.summary.totalApplications %></h3>
+                    <p>Total Applications</p>
+                    <span class="metric-change positive">+28% this month</span>
+                </div>
+            </div>
+            
+            <div class="metric-card warning">
+                <div class="metric-icon">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="activeInternships"><%= analytics.summary.activeInternships %></h3>
+                    <p>Active Positions</p>
+                    <span class="metric-change neutral">No change</span>
+                </div>
+            </div>
+            
+            <div class="metric-card info">
+                <div class="metric-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="avgApplications"><%= analytics.summary.avgApplicationsPerInternship %></h3>
+                    <p>Avg Applications/Position</p>
+                    <span class="metric-change positive">+15% this month</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+       
+
+        <div class="analytics-charts">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-trophy"></i> Top Performing Internships</h3>
+                    <!-- <span class="chart-subtitle">By application count and conversion rate</span> -->
+                </div>
+                <div class="chart-content">
+                    <div class="performance-list">
+                        <% analytics.topPerformingInternships.forEach((internship, index) => { %>
+                            <div class="performance-item">
+                                <div class="rank">#<%= index + 1 %></div>
+                                <div class="performance-info">
+                                    <h4><%= internship.title %></h4>
+                                    <p><%= internship.department %></p>
+                                </div>
+                                <div class="performance-metrics">
+                                    <div class="metric">
+                                        <span class="metric-value"><%= internship.applications %></span>
+                                        <span class="metric-label">Applications</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-value"><%= internship.conversionRate %>%</span>
+                                        <span class="metric-label">Conversion</span>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+        </div>
+<br>
+        <!-- Recent Activity -->
+        <div class="analytics-section">
+            <div class="section-header">
+                <h3><i class="fas fa-clock"></i> Recent Activity</h3>
+                <div class="time-filter">
+                    <button class="btn-secondary small active" data-period="week">This Week</button>
+                    <button class="btn-secondary small" data-period="month">This Month</button>
+                    <button class="btn-secondary small" data-period="quarter">This Quarter</button>
+                </div>
+            </div>
+           
+            <div class="activity-grid">
+                <div class="activity-card">
+                    <div class="activity-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="activity-info">
+                        <h4><%= analytics.recentActivity.newInternshipsLastWeek %></h4>
+                        <p>New Internships Posted</p>
+                        <span class="activity-period">Last 7 days</span>
+                    </div>
+                </div>
+                
+                <div class="activity-card">
+                    <div class="activity-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="activity-info">
+                        <h4><%= analytics.recentActivity.newApplicationsLastWeek %></h4>
+                        <p>New Applications Received</p>
+                        <span class="activity-period">Last 7 days</span>
+                    </div>
+                </div>
+                
+                <div class="activity-card">
+                    <div class="activity-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="activity-info">
+                        <h4>8</h4>
+                        <p>Candidates Shortlisted</p>
+                        <span class="activity-period">Last 7 days</span>
+                    </div>
+                </div>
+                
+                <div class="activity-card">
+                    <div class="activity-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="activity-info">
+                        <h4>142</h4>
+                        <p>Profile Views</p>
+                        <span class="activity-period">Last 7 days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+ <br>
+            <br>
+            
+        <!-- Detailed Analytics Tables -->
+        <div class="analytics-tables">
+            <div class="table-container">
+                <div class="table-header">
+                    <h3><i class="fas fa-table"></i> Internship Performance Details</h3>
+                    <div class="table-actions">
+                        <input type="text" placeholder="Search internships..." id="internshipSearch">
+                        <button class="btn-primary small" onclick="exportTable('internships')">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                <div class="table-content">
+                    <table class="analytics-table">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Department</th>
+                                <th>Posted Date</th>
+                                <th>Applications</th>
+                                <th>Shortlisted</th>
+                                <th>Conversion Rate</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="internshipsTableBody">
+                            <% analytics.topPerformingInternships.forEach(internship => { %>
+                                <tr>
+                                    <td><%= internship.title %></td>
+                                    <td><span class="department-badge"><%= internship.department %></span></td>
+                                    <td>Jan 15, 2024</td>
+                                    <td><span class="metric-highlight"><%= internship.applications %></span></td>
+                                    <td>5</td>
+                                    <td>
+                                        <span class="conversion-rate <%= internship.conversionRate > 30 ? 'high' : internship.conversionRate > 15 ? 'medium' : 'low' %>">
+                                            <%= internship.conversionRate %>%
+                                        </span>
+                                    </td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights and Recommendations -->
+        <div class="insights-section">
+            <div class="section-header">
+                <h3><i class="fas fa-lightbulb"></i> AI-Powered Insights</h3>
+            </div>
+            
+            <div class="insights-grid">
+                <div class="insight-card positive">
+                    <div class="insight-icon">
+                        <i class="fas fa-trending-up"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Strong Growth Trend</h4>
+                        <p>Your internship applications have increased by 28% this month. Technology and Marketing departments are showing the highest demand.</p>
+                        <a href="#" class="insight-action">View Details</a>
+                    </div>
+                </div>
+                
+                <div class="insight-card warning">
+                    <div class="insight-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Low Conversion in Finance</h4>
+                        <p>Finance internships have a 12% conversion rate, below the average of 18%. Consider reviewing job requirements or compensation.</p>
+                        <a href="#" class="insight-action">Analyze Further</a>
+                    </div>
+                </div>
+                
+                <div class="insight-card info">
+                    <div class="insight-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Optimal Posting Time</h4>
+                        <p>Internships posted on Tuesday-Thursday receive 23% more applications. Schedule your next posting accordingly.</p>
+                        <a href="#" class="insight-action">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+/* =========================
+   Analytics page JavaScript
+   ========================= */
+
+let trendsChart, departmentChart, statusChart;
+
+// small helper used across functions to safely get elements
+const $ = selector => document.querySelector(selector);
+const $$ = selector => Array.from(document.querySelectorAll(selector));
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    initializeFilters();
+    injectToastContainer();
+});
+
+/* -------------------------
+   Chart initialization
+   ------------------------- */
+function initializeCharts() {
+    // Monthly trends chart
+    const trendsEl = $('#trendsChart');
+    if (trendsEl) {
+        const trendsCtx = trendsEl.getContext('2d');
+        const monthlyData = <%= JSON.stringify(analytics.monthlyTrends) %> || [];
+
+        trendsChart = new Chart(trendsCtx, {
+            type: 'line',
+            data: {
+                labels: monthlyData.map(d => d.month),
+                datasets: [{
+                    label: 'Internships Posted',
+                    data: monthlyData.map(d => d.internships),
+                    borderColor: 'rgb(102, 126, 234)',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    tension: 0.4
+                }, {
+                    label: 'Applications Received',
+                    data: monthlyData.map(d => d.applications),
+                    borderColor: 'rgb(16, 185, 129)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+
+    // Department distribution chart
+    const deptEl = $('#departmentChart');
+    if (deptEl) {
+        const departmentCtx = deptEl.getContext('2d');
+        const departmentData = <%= JSON.stringify(analytics.departmentStats) %> || {};
+
+        const deptLabels = Object.keys(departmentData);
+        const deptValues = Object.values(departmentData);
+
+        departmentChart = new Chart(departmentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: deptLabels,
+                datasets: [{
+                    data: deptValues,
+                    backgroundColor: [
+                        'rgb(102, 126, 234)',
+                        'rgb(16, 185, 129)',
+                        'rgb(245, 158, 11)',
+                        'rgb(239, 68, 68)',
+                        'rgb(139, 92, 246)',
+                        'rgb(236, 72, 153)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'right' } }
+            }
+        });
+    }
+
+    // Status breakdown chart
+    const statusEl = $('#statusChart');
+    if (statusEl) {
+        const statusCtx = statusEl.getContext('2d');
+        const statusData = <%= JSON.stringify(analytics.statusBreakdown) %> || { pending:0, shortlisted:0, rejected:0 };
+
+        statusChart = new Chart(statusCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Pending', 'Shortlisted', 'Rejected'],
+                datasets: [{
+                    data: [statusData.pending, statusData.shortlisted, statusData.rejected],
+                    backgroundColor: [
+                        'rgb(245, 158, 11)',
+                        'rgb(16, 185, 129)',
+                        'rgb(239, 68, 68)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    }
+}
+
+/* -------------------------
+   Filters and controls
+   ------------------------- */
+function initializeFilters() {
+    // Time period filters
+    const periodButtons = $$('[data-period]');
+    periodButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            periodButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            updateActivityData(this.dataset.period);
+        });
+    });
+
+    // Trend metric selector
+    const trendMetricSelect = document.getElementById('trendMetric');
+    if (trendMetricSelect) {
+        trendMetricSelect.addEventListener('change', updateTrendsChart);
+    }
+
+    // Search functionality for internships table
+    const searchInput = document.getElementById('internshipSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(searchTable, 300));
+    }
+
+    // Performance list clickable rows (optional small UX): scroll to table or copy title, keep non-destructive
+    const performanceItems = $$('.performance-item');
+    performanceItems.forEach(item => {
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', () => {
+            const title = item.querySelector('.performance-info h4')?.textContent || '';
+            showAlert(`Selected: ${title}`, 'info');
+        });
+    });
+
+    // insight action links - prevent default, show toast (they can be hooked to real routes later)
+    const insightActions = $$('.insight-action');
+    insightActions.forEach(a => {
+        a.addEventListener('click', (e) => {
+            e.preventDefault();
+            showAlert('Opening insight... (implement route)', 'info');
+        });
+    });
+}
+
+/* -------------------------
+   Chart helpers
+   ------------------------- */
+function updateTrendsChart() {
+    if (!trendsChart) return;
+    const selectedMetric = document.getElementById('trendMetric').value;
+    const datasets = trendsChart.data.datasets;
+
+    switch (selectedMetric) {
+        case 'internships':
+            datasets[0].hidden = false;
+            datasets[1].hidden = true;
+            break;
+        case 'applications':
+            datasets[0].hidden = true;
+            datasets[1].hidden = false;
+            break;
+        default:
+            datasets[0].hidden = false;
+            datasets[1].hidden = false;
+    }
+    trendsChart.update();
+}
+
+function toggleChartType(chartName) {
+    if (chartName !== 'department') return;
+    if (!departmentChart) return;
+
+    // Preserve current data & options
+    const saved = {
+        data: JSON.parse(JSON.stringify(departmentChart.data)),
+        options: JSON.parse(JSON.stringify(departmentChart.options)),
+        currentType: departmentChart.config.type
+    };
+
+    const newType = saved.currentType === 'doughnut' ? 'bar' : 'doughnut';
+
+    // Destroy the existing chart instance and create a new one with same data
+    departmentChart.destroy();
+
+    const ctx = document.getElementById('departmentChart').getContext('2d');
+
+    // If switching to bar, adapt dataset (bar expects dataset.label & backgroundColor permitted)
+    let newOptions = saved.options;
+    if (newType === 'bar') {
+        // ensure legend position sensible for bar
+        newOptions.plugins = newOptions.plugins || {};
+        newOptions.plugins.legend = newOptions.plugins.legend || {};
+        newOptions.plugins.legend.position = 'top';
+        newOptions.scales = {
+            y: { beginAtZero: true }
+        };
+    } else {
+        // doughnut view
+        newOptions.plugins = newOptions.plugins || {};
+        newOptions.plugins.legend = newOptions.plugins.legend || {};
+        newOptions.plugins.legend.position = 'right';
+        delete newOptions.scales;
+    }
+
+    departmentChart = new Chart(ctx, {
+        type: newType,
+        data: saved.data,
+        options: newOptions
+    });
+}
+
+/* -------------------------
+   Activity & table functions
+   ------------------------- */
+async function updateActivityData(period) {
+    // Try to fetch server-side updated activity for the selected period
+    // Endpoint assumed: /api/analytics/activity?period=week|month|quarter
+    try {
+        showAlert(`Updating activity for "${period}"...`, 'info');
+
+        const resp = await fetch(`/api/analytics/activity?period=${encodeURIComponent(period)}`);
+        if (!resp.ok) {
+            // fallback: still notify but do not throw so UI continues to work
+            showAlert('Unable to fetch activity from server — showing cached values.', 'warning');
+            return;
+        }
+        const data = await resp.json();
+
+        // Update the Recent Activity cards if elements exist
+        // Expecting data keys: newInternshipsLastWeek, newApplicationsLastWeek, shortlisted, profileViews (or similar)
+        const map = {
+            newInternshipsLastWeek: '.activity-card:nth-child(1) .activity-info h4',
+            newApplicationsLastWeek: '.activity-card:nth-child(2) .activity-info h4',
+            shortlisted: '.activity-card:nth-child(3) .activity-info h4',
+            profileViews: '.activity-card:nth-child(4) .activity-info h4'
+        };
+
+        if (data.newInternshipsLastWeek !== undefined) {
+            const el1 = document.querySelector(map.newInternshipsLastWeek);
+            if (el1) el1.textContent = data.newInternshipsLastWeek;
+        }
+        if (data.newApplicationsLastWeek !== undefined) {
+            const el2 = document.querySelector(map.newApplicationsLastWeek);
+            if (el2) el2.textContent = data.newApplicationsLastWeek;
+        }
+        // fallback keys:
+        if (data.shortlisted !== undefined) {
+            const el3 = document.querySelector(map.shortlisted);
+            if (el3) el3.textContent = data.shortlisted;
+        }
+        if (data.profileViews !== undefined) {
+            const el4 = document.querySelector(map.profileViews);
+            if (el4) el4.textContent = data.profileViews;
+        }
+
+        showAlert('Activity updated.', 'success');
+    } catch (err) {
+        console.error('updateActivityData error', err);
+        showAlert('Error updating activity data.', 'error');
+    }
+}
+
+/* -------------------------
+   Table search & export
+   ------------------------- */
+function searchTable() {
+    const searchTerm = (document.getElementById('internshipSearch')?.value || '').toLowerCase();
+    const tableRows = document.querySelectorAll('#internshipsTableBody tr');
+
+    tableRows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+}
+
+function exportTable(tableType) {
+    // Currently only 'internships' used. Export visible rows to CSV.
+    if (tableType !== 'internships') {
+        showAlert('Export for that table type is not implemented yet.', 'info');
+        return;
+    }
+
+    const rows = Array.from(document.querySelectorAll('#internshipsTableBody tr'))
+        .filter(r => r.style.display !== 'none');
+
+    if (!rows.length) {
+        showAlert('No rows to export.', 'warning');
+        return;
+    }
+
+    // Build CSV
+    const headers = ['Position', 'Department', 'Posted Date', 'Applications', 'Shortlisted', 'Conversion Rate', 'Status'];
+    const csv = [headers.join(',')];
+
+    rows.forEach(row => {
+        const cols = Array.from(row.querySelectorAll('td')).map(td => {
+            // sanitize commas/newlines and trim
+            let text = td.textContent.trim().replace(/(\r\n|\n|\r)/gm, ' ');
+            // wrap in quotes if contains comma or quote
+            if (text.includes('"')) text = text.replace(/"/g, '""');
+            if (text.includes(',') || text.includes('"')) return `"${text}"`;
+            return text;
+        });
+        csv.push(cols.join(','));
+    });
+
+    const csvBlob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(csvBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `internships-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showAlert('Internships table exported.', 'success');
+}
+
+/* -------------------------
+   Refresh + Export Report
+   ------------------------- */
+async function refreshAnalytics() {
+    try {
+        showAlert('Refreshing analytics data...', 'info');
+
+        const response = await fetch('/api/analytics/dashboard');
+        if (!response.ok) throw new Error('Network response not ok for analytics dashboard');
+        const newData = await response.json();
+
+        // Update metrics
+        if (newData.summary) {
+            $('#totalInternships') && (document.getElementById('totalInternships').textContent = newData.summary.totalInternships ?? '-');
+            $('#totalApplications') && (document.getElementById('totalApplications').textContent = newData.summary.totalApplications ?? '-');
+            $('#activeInternships') && (document.getElementById('activeInternships').textContent = newData.summary.activeInternships ?? '-');
+            $('#avgApplications') && (document.getElementById('avgApplications').textContent = newData.summary.avgApplicationsPerInternship ?? '-');
+        }
+
+        // Update trends chart
+        if (trendsChart && Array.isArray(newData.monthlyTrends)) {
+            trendsChart.data.labels = newData.monthlyTrends.map(d => d.month);
+            trendsChart.data.datasets[0].data = newData.monthlyTrends.map(d => d.internships);
+            trendsChart.data.datasets[1].data = newData.monthlyTrends.map(d => d.applications);
+            trendsChart.update();
+        }
+
+        // Update department chart
+        if (departmentChart && newData.departmentStats) {
+            departmentChart.data.labels = Object.keys(newData.departmentStats);
+            departmentChart.data.datasets[0].data = Object.values(newData.departmentStats);
+            departmentChart.update();
+        }
+
+        // Update status chart
+        if (statusChart && newData.statusBreakdown) {
+            statusChart.data.datasets[0].data = [
+                newData.statusBreakdown.pending ?? 0,
+                newData.statusBreakdown.shortlisted ?? 0,
+                newData.statusBreakdown.rejected ?? 0
+            ];
+            statusChart.update();
+        }
+
+        showAlert('Analytics data refreshed successfully!', 'success');
+    } catch (error) {
+        console.error('Error refreshing analytics:', error);
+        showAlert('Error refreshing analytics data.', 'error');
+    }
+}
+
+async function exportReport() {
+    try {
+        const response = await fetch('/api/analytics/export?format=json');
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `analytics-report-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            showAlert('Analytics report exported successfully!', 'success');
+        } else {
+            showAlert('Error exporting report.', 'error');
+        }
+    } catch (error) {
+        console.error('Export error:', error);
+        showAlert('Error exporting report.', 'error');
+    }
+}
+
+/* -------------------------
+   Utilities
+   ------------------------- */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+/* -------------------------
+   Tiny toast / alert system
+   ------------------------- */
+function injectToastContainer() {
+    if ($('#toast-container')) return;
+    const container = document.createElement('div');
+    container.id = 'toast-container';
+    container.style.position = 'fixed';
+    container.style.right = '20px';
+    container.style.bottom = '20px';
+    container.style.zIndex = 9999;
+    document.body.appendChild(container);
+}
+
+function showAlert(message = '', type = 'info', timeout = 3500) {
+    // types: info, success, warning, error
+    const container = $('#toast-container') || (() => { injectToastContainer(); return $('#toast-container'); })();
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.style.minWidth = '220px';
+    toast.style.marginTop = '8px';
+    toast.style.padding = '10px 14px';
+    toast.style.borderRadius = '8px';
+    toast.style.boxShadow = '0 6px 18px rgba(0,0,0,0.12)';
+    toast.style.color = '#fff';
+    toast.style.fontFamily = 'inherit';
+    toast.style.fontSize = '14px';
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity .2s ease, transform .2s ease';
+    toast.style.transform = 'translateY(6px)';
+
+    // background by type
+    switch (type) {
+        case 'success': toast.style.background = 'linear-gradient(90deg,#16a34a,#059669)'; break;
+        case 'warning': toast.style.background = 'linear-gradient(90deg,#d97706,#f59e0b)'; break;
+        case 'error': toast.style.background = 'linear-gradient(90deg,#dc2626,#ef4444)'; break;
+        default: toast.style.background = 'linear-gradient(90deg,#2563eb,#4f46e5)';
+    }
+
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    // trigger enter animation
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+    });
+
+    const id = setTimeout(() => {
+        // exit
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(6px)';
+        setTimeout(() => {
+            clearTimeout(id);
+            container.removeChild(toast);
+        }, 220);
+    }, timeout);
+}
+</script>
+
+<!-- <script>
+// Analytics page JavaScript functionality
+let trendsChart, departmentChart, statusChart;
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    initializeFilters();
+});
+
+function initializeCharts() {
+    // Monthly trends chart
+    const trendsCtx = document.getElementById('trendsChart').getContext('2d');
+    const monthlyData = <%= JSON.stringify(analytics.monthlyTrends) %>;
+    
+    trendsChart = new Chart(trendsCtx, {
+        type: 'line',
+        data: {
+            labels: monthlyData.map(d => d.month),
+            datasets: [{
+                label: 'Internships Posted',
+                data: monthlyData.map(d => d.internships),
+                borderColor: 'rgb(102, 126, 234)',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Applications Received',
+                data: monthlyData.map(d => d.applications),
+                borderColor: 'rgb(16, 185, 129)',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Department distribution chart
+    const departmentCtx = document.getElementById('departmentChart').getContext('2d');
+    const departmentData = <%= JSON.stringify(analytics.departmentStats) %>;
+    
+    departmentChart = new Chart(departmentCtx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(departmentData),
+            datasets: [{
+                data: Object.values(departmentData),
+                backgroundColor: [
+                    'rgb(102, 126, 234)',
+                    'rgb(16, 185, 129)',
+                    'rgb(245, 158, 11)',
+                    'rgb(239, 68, 68)',
+                    'rgb(139, 92, 246)',
+                    'rgb(236, 72, 153)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+
+    // Status breakdown chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    const statusData = <%= JSON.stringify(analytics.statusBreakdown) %>;
+    
+    statusChart = new Chart(statusCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Pending', 'Shortlisted', 'Rejected'],
+            datasets: [{
+                data: [statusData.pending, statusData.shortlisted, statusData.rejected],
+                backgroundColor: [
+                    'rgb(245, 158, 11)',
+                    'rgb(16, 185, 129)',
+                    'rgb(239, 68, 68)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+function initializeFilters() {
+    // Time period filters
+    const periodButtons = document.querySelectorAll('[data-period]');
+    periodButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            periodButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            updateActivityData(this.dataset.period);
+        });
+    });
+
+    // Trend metric selector
+    const trendMetricSelect = document.getElementById('trendMetric');
+    if (trendMetricSelect) {
+        trendMetricSelect.addEventListener('change', updateTrendsChart);
+    }
+
+    // Search functionality
+    const searchInput = document.getElementById('internshipSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(searchTable, 300));
+    }
+}
+
+function updateTrendsChart() {
+    const selectedMetric = document.getElementById('trendMetric').value;
+    const datasets = trendsChart.data.datasets;
+
+    switch (selectedMetric) {
+        case 'internships':
+            datasets[0].hidden = false;
+            datasets[1].hidden = true;
+            break;
+        case 'applications':
+            datasets[0].hidden = true;
+            datasets[1].hidden = false;
+            break;
+        default:
+            datasets[0].hidden = false;
+            datasets[1].hidden = false;
+    }
+
+    trendsChart.update();
+}
+
+function toggleChartType(chartName) {
+    if (chartName === 'department') {
+        const currentType = departmentChart.config.type;
+        const newType = currentType === 'doughnut' ? 'bar' : 'doughnut';
+        
+        departmentChart.destroy();
+        const ctx = document.getElementById('departmentChart').getContext('2d');
+        
+        departmentChart = new Chart(ctx, {
+            type: newType,
+            data: departmentChart.data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: newType === 'bar' ? 'top' : 'right'
+                    }
+                },
+                scales: newType === 'bar' ? {
+                    y: {
+                        beginAtZero: true
+                    }
+                } : {}
+            }
+        });
+    }
+}
+
+function updateActivityData(period) {
+    // This would typically fetch new data based on the selected period
+    showAlert(`Activity data updated for period: ${period}`, 'info');
+}
+
+function searchTable() {
+    const searchTerm = document.getElementById('internshipSearch').value.toLowerCase();
+    const tableRows = document.querySelectorAll('#internshipsTableBody tr');
+    
+    tableRows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+async function refreshAnalytics() {
+    try {
+        showAlert('Refreshing analytics data...', 'info');
+        
+        const response = await fetch('/api/analytics/dashboard');
+        const newData = await response.json();
+        
+        // Update metrics
+        document.getElementById('totalInternships').textContent = newData.summary.totalInternships;
+        document.getElementById('totalApplications').textContent = newData.summary.totalApplications;
+        document.getElementById('activeInternships').textContent = newData.summary.activeInternships;
+        document.getElementById('avgApplications').textContent = newData.summary.avgApplicationsPerInternship;
+        
+        // Update charts with new data
+        trendsChart.data.datasets[0].data = newData.monthlyTrends.map(d => d.internships);
+        trendsChart.data.datasets[1].data = newData.monthlyTrends.map(d => d.applications);
+        trendsChart.update();
+        
+        // Update department chart
+        departmentChart.data.labels = Object.keys(newData.departmentStats);
+        departmentChart.data.datasets[0].data = Object.values(newData.departmentStats);
+        departmentChart.update();
+        
+        // Update status chart
+        statusChart.data.datasets[0].data = [
+            newData.statusBreakdown.pending,
+            newData.statusBreakdown.shortlisted,
+            newData.statusBreakdown.rejected
+        ];
+        statusChart.update();
+        
+        showAlert('Analytics data refreshed successfully!', 'success');
+    } catch (error) {
+        console.error('Error refreshing analytics:', error);
+        showAlert('Error refreshing analytics data.', 'error');
+    }
+}
+
+async function exportReport() {
+    try {
+        const response = await fetch('/api/analytics/export?format=json');
+        
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `analytics-report-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showAlert('Analytics report exported successfully!', 'success');
+        } else {
+            showAlert('Error exporting report.', 'error');
+        }
+    } catch (error) {
+        console.error('Export error:', error);
+        showAlert('Error exporting report.', 'error');
+    }
+}
+
+function exportTable(tableType) {
+    // This would export the specific table data as CSV
+    showAlert(`${tableType} table export would be implemented here.`, 'info');
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+</script> -->
+
+<%- include('partials/footer') %>

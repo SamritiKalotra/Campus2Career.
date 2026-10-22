@@ -1,0 +1,778 @@
+<%- include('partials/header') %>
+
+<div class="main-container">
+    <%- include('partials/sidebar', { page: 'reports' }) %>
+    z
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Reports & Analytics</h1>
+            <p>Generate comprehensive reports for your internship program</p>
+        </div>
+
+        <!-- Quick Report Generation -->
+        <div class="report-generator" style="background-image: url('/images/background1.jpeg');">
+            <div class="generator-header">
+                <h2><i class="fas fa-chart-bar"></i> Generate Custom Report</h2>
+                <!-- <p>Create detailed reports based on your specific requirements</p> -->
+            </div>
+            
+            <form id="reportForm" class="report-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="reportType">Report Type *</label>
+                        <select id="reportType" name="reportType" required>
+                            <option value="">Select Report Type</option>
+                            <option value="internships">Internships Overview</option>
+                            <option value="applications">Applications Analysis</option>
+                            <option value="performance">Performance Metrics</option>
+                            <option value="department">Department Breakdown</option>
+                            <option value="timeline">Timeline Analysis</option>
+                            <option value="conversion">Conversion Rates</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dateRange">Date Range</label>
+                        <select id="dateRange" name="dateRange">
+                            <option value="last-week">Last Week</option>
+                            <option value="last-month">Last Month</option>
+                            <option value="last-quarter" selected>Last Quarter</option>
+                            <option value="last-year">Last Year</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="department">Department Filter</label>
+                        <select id="department" name="department">
+                            <option value="">All Departments</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Human Resources">Human Resources</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="format">Export Format</label>
+                        <select id="format" name="format">
+                            <option value="pdf">PDF Report</option>
+                            <option value="excel">Excel Spreadsheet</option>
+                            <option value="csv">CSV Data</option>
+                            <option value="json">JSON Data</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="customDateRange" class="custom-date-range" style="display: none;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate" name="startDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date</label>
+                            <input type="date" id="endDate" name="endDate">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="previewReport()">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-download"></i> Generate Report
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Pre-built Reports -->
+        <div class="prebuilt-reports">
+            <div class="section-header">
+                <h2><i class="fas fa-file-alt"></i> Pre-built Reports</h2>
+                <p>Quick access to commonly used reports</p>
+            </div>
+            
+            <div class="reports-grid">
+                <div class="report-card">
+                    <div class="report-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="report-info">
+                        <h3>Internship Summary</h3>
+                        <p>Overview of all internship postings with key metrics</p>
+                        <div class="report-stats">
+                            <span><i class="fas fa-calendar"></i> Updated daily</span>
+                            <span><i class="fas fa-file"></i> 5 pages</span>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn-secondary small" onclick="generatePrebuiltReport('internship-summary')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="btn-primary small" onclick="viewReport('internship-summary')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <div class="report-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="report-info">
+                        <h3>Applicant Analytics</h3>
+                        <p>Detailed analysis of candidate applications and trends</p>
+                        <div class="report-stats">
+                            <span><i class="fas fa-calendar"></i> Updated weekly</span>
+                            <span><i class="fas fa-file"></i> 8 pages</span>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn-secondary small" onclick="generatePrebuiltReport('applicant-analytics')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="btn-primary small" onclick="viewReport('applicant-analytics')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <div class="report-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="report-info">
+                        <h3>Performance Dashboard</h3>
+                        <p>KPIs, conversion rates, and performance benchmarks</p>
+                        <div class="report-stats">
+                            <span><i class="fas fa-calendar"></i> Real-time</span>
+                            <span><i class="fas fa-file"></i> 12 pages</span>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn-secondary small" onclick="generatePrebuiltReport('performance-dashboard')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="btn-primary small" onclick="viewReport('performance-dashboard')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <div class="report-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="report-info">
+                        <h3>Department Analysis</h3>
+                        <p>Department-wise breakdown and comparative analysis</p>
+                        <div class="report-stats">
+                            <span><i class="fas fa-calendar"></i> Updated monthly</span>
+                            <span><i class="fas fa-file"></i> 6 pages</span>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn-secondary small" onclick="generatePrebuiltReport('department-analysis')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="btn-primary small" onclick="viewReport('department-analysis')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <div class="report-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="report-info">
+                        <h3>Monthly Executive Summary</h3>
+                        <p>High-level summary for leadership and stakeholders</p>
+                        <div class="report-stats">
+                            <span><i class="fas fa-calendar"></i> Monthly</span>
+                            <span><i class="fas fa-file"></i> 3 pages</span>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn-secondary small" onclick="generatePrebuiltReport('executive-summary')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="btn-primary small" onclick="viewReport('executive-summary')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <div class="report-icon">
+                        <i class="fas fa-trend-up"></i>
+                    </div>
+                    <div class="report-info">
+                        <h3>Growth & Trends</h3>
+                        <p>Historical data analysis and future projections</p>
+                        <div class="report-stats">
+                            <span><i class="fas fa-calendar"></i> Quarterly</span>
+                            <span><i class="fas fa-file"></i> 10 pages</span>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn-secondary small" onclick="generatePrebuiltReport('growth-trends')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="btn-primary small" onclick="viewReport('growth-trends')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report History -->
+        <div class="report-history">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Recent Reports</h2>
+                <p>Access your previously generated reports</p>
+            </div>
+            
+            <div class="history-table">
+                <table class="reports-table">
+                    <thead>
+                        <tr>
+                            <th>Report Name</th>
+                            <th>Type</th>
+                            <th>Generated On</th>
+                            <th>Size</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Q1 Performance Analysis</td>
+                            <td><span class="report-type-badge performance">Performance</span></td>
+                            <td>Mar 15, 2024 10:30 AM</td>
+                            <td>2.4 MB</td>
+                            <td><span class="status-badge success">Completed</span></td>
+                            <td>
+                                <button class="btn-secondary small" onclick="downloadReport('q1-performance')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="btn-primary small" onclick="viewReport('q1-performance')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-danger small" onclick="deleteReport('q1-performance')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Technology Dept. Analysis</td>
+                            <td><span class="report-type-badge department">Department</span></td>
+                            <td>Mar 12, 2024 2:15 PM</td>
+                            <td>1.8 MB</td>
+                            <td><span class="status-badge success">Completed</span></td>
+                            <td>
+                                <button class="btn-secondary small" onclick="downloadReport('tech-dept')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="btn-primary small" onclick="viewReport('tech-dept')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-danger small" onclick="deleteReport('tech-dept')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Applications Summary - February</td>
+                            <td><span class="report-type-badge applications">Applications</span></td>
+                            <td>Mar 1, 2024 9:00 AM</td>
+                            <td>1.2 MB</td>
+                            <td><span class="status-badge warning">Processing</span></td>
+                            <td>
+                                <button class="btn-secondary small" disabled>
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </button>
+                                <button class="btn-primary small" disabled>
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-danger small" onclick="deleteReport('feb-applications')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Report Preview Modal -->
+        <div id="reportPreviewModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-eye"></i> Report Preview</h3>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="reportPreviewContent">
+                        <!-- Preview content will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeModal()">Close</button>
+                    <button class="btn-primary" onclick="downloadFromPreview()">Download Report</button>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <!-- Scheduled Reports -->
+        <div class="scheduled-reports">
+            <div class="section-header">
+                <h2><i class="fas fa-clock"></i> Scheduled Reports</h2>
+                <p>Automate report generation and delivery</p>
+                <button class="btn-primary" onclick="openScheduleModal()">
+                    <i class="fas fa-plus"></i> Schedule New Report
+                </button>
+            </div>
+            
+            <div class="schedule-list">
+                <div class="schedule-item">
+                    <div class="schedule-info">
+                        <h4>Weekly Performance Summary</h4>
+                        <p>Sent every Monday at 9:00 AM</p>
+                        <span class="schedule-recipients">To: hr@company.com, manager@company.com</span>
+                    </div>
+                    <div class="schedule-status">
+                        <span class="status-badge success">Active</span>
+                    </div>
+                    <div class="schedule-actions">
+                        <button class="btn-secondary small" onclick="editSchedule('weekly-performance')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-danger small" onclick="deleteSchedule('weekly-performance')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="schedule-item">
+                    <div class="schedule-info">
+                        <h4>Monthly Executive Report</h4>
+                        <p>Sent on the 1st of every month at 8:00 AM</p>
+                        <span class="schedule-recipients">To: ceo@company.com, hr-director@company.com</span>
+                    </div>
+                    <div class="schedule-status">
+                        <span class="status-badge success">Active</span>
+                    </div>
+                    <div class="schedule-actions">
+                        <button class="btn-secondary small" onclick="editSchedule('monthly-executive')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-danger small" onclick="deleteSchedule('monthly-executive')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+/* Reports page JavaScript functionality (replace existing script) */
+document.addEventListener('DOMContentLoaded', function() {
+    initializeReportForm();
+    initScheduleModule();
+});
+
+// ------------------ Report form / preview (unchanged core behavior) ------------------
+function initializeReportForm() {
+    const reportForm = document.getElementById('reportForm');
+    const dateRangeSelect = document.getElementById('dateRange');
+    const customDateRange = document.getElementById('customDateRange');
+    
+    if (dateRangeSelect) {
+        dateRangeSelect.addEventListener('change', function() {
+            if (customDateRange) customDateRange.style.display = (this.value === 'custom') ? 'block' : 'none';
+        });
+    }
+    
+    if (reportForm) reportForm.addEventListener('submit', handleReportGeneration);
+}
+
+async function handleReportGeneration(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const reportData = Object.fromEntries(formData.entries());
+
+    try {
+        showLoading(e.target);
+        // Replace with real backend endpoint. For now we'll attempt a fetch and handle errors gracefully.
+        const response = await fetch(`/api/reports/generate?${new URLSearchParams(reportData)}`);
+        if (!response.ok) throw new Error("Failed to generate report");
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `report-${Date.now()}.${reportData.format || 'pdf'}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        showAlert('Report downloaded successfully!', 'success');
+    } catch (err) {
+        console.error(err);
+        showAlert('Error generating report.', 'error');
+    } finally {
+        hideLoading(e.target);
+    }
+}
+
+function previewReport() {
+    const formData = new FormData(document.getElementById('reportForm'));
+    const reportType = formData.get('reportType');
+    if (!reportType) return showAlert('Please select a report type.', 'warning');
+    const previewContent = generatePreviewContent(reportType);
+    const previewContainer = document.getElementById('reportPreviewContent');
+    if (previewContainer) previewContainer.innerHTML = previewContent;
+    const modal = document.getElementById('reportPreviewModal');
+    if (modal) modal.style.display = 'block';
+}
+
+function generatePreviewContent(reportType) {
+    return `
+        <h4>Preview: ${escapeHtml(reportType)} Report</h4>
+        <p>This is a live preview of the <strong>${escapeHtml(reportType)}</strong> report based on selected filters.</p>
+        <p><em>Note:</em> This preview is simulated in the frontend. Replace with server content if needed.</p>
+    `;
+}
+
+function viewReport(reportId) {
+    const previewContainer = document.getElementById('reportPreviewContent');
+    if (previewContainer) {
+        previewContainer.innerHTML = `
+            <h4>Preview for ${escapeHtml(reportId)}</h4>
+            <p>This is a generated preview of the <strong>${escapeHtml(reportId)}</strong> report.</p>
+        `;
+    }
+    const modal = document.getElementById('reportPreviewModal');
+    if (modal) modal.style.display = 'block';
+}
+
+function downloadFromPreview() {
+    const blob = new Blob(["Sample report content"], { type: "application/pdf" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `preview-report-${Date.now()}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+    closeModal();
+}
+
+// ------------------ Modal close helpers ------------------
+function closeModal() {
+    const modal = document.getElementById('reportPreviewModal');
+    if (modal) modal.style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('reportPreviewModal');
+    if (event.target === modal) closeModal();
+};
+
+// ------------------ Utilities ------------------
+function showAlert(msg, type = 'info') {
+    // Keep simple for now; replace with custom toast if desired.
+    alert(`${type.toUpperCase()}: ${msg}`);
+}
+function showLoading(form) { if (form) console.log("Loading..."); }
+function hideLoading(form) { if (form) console.log("Done."); }
+function escapeHtml(str) {
+    if (!str && str !== '') return '';
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// ------------------ Scheduling module with persistence & working edit/delete ------------------
+const SCHEDULE_STORAGE_KEY = 'scheduledReports_v1';
+let scheduledReports = []; // in-memory copy
+
+function initScheduleModule() {
+    loadSchedulesFromStorage();
+    migrateStaticSchedules(); // read the two hard-coded schedule items (if present) into storage once
+    renderSchedules();
+
+    // Keep compatibility helpers (in case some template HTML still triggers these by name)
+    window.editSchedule = function(identifier) {
+        const s = findScheduleByIdentifier(identifier);
+        if (!s) return showAlert('Schedule not found', 'error');
+        openScheduleModal('edit', s.id);
+    };
+    window.deleteSchedule = function(identifier) {
+        const s = findScheduleByIdentifier(identifier);
+        if (!s) return showAlert('Schedule not found', 'error');
+        deleteScheduleById(s.id);
+    };
+}
+
+function genId() {
+    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,9)}`;
+}
+
+function slugify(text = '') {
+    return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+function loadSchedulesFromStorage() {
+    try {
+        const raw = localStorage.getItem(SCHEDULE_STORAGE_KEY);
+        scheduledReports = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+        console.warn('Could not read schedules from storage', e);
+        scheduledReports = [];
+    }
+}
+
+function saveSchedulesToStorage() {
+    try {
+        localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(scheduledReports));
+    } catch (e) {
+        console.warn('Could not save schedules', e);
+    }
+}
+
+/* If there are static items rendered server-side (the sample two items),
+   pick their content up into storage so that everything becomes editable/deletable
+   and persists. This avoids leaving two "unmanaged" schedule rows in the page. */
+function migrateStaticSchedules() {
+    const list = document.querySelector('.schedule-list');
+    if (!list) return;
+    const staticItems = Array.from(list.querySelectorAll(':scope > .schedule-item'));
+    if (!staticItems.length) return;
+
+    let added = false;
+    staticItems.forEach(el => {
+        // skip if this element already has a data-id (we only migrate raw static rows)
+        if (el.dataset && el.dataset.id) return;
+
+        const nameEl = el.querySelector('h4');
+        if (!nameEl) return;
+        const name = nameEl.innerText.trim();
+        const timeEl = el.querySelector('p');
+        const time = timeEl ? timeEl.innerText.trim() : '';
+        const recipientsEl = el.querySelector('.schedule-recipients');
+        const recipients = recipientsEl ? recipientsEl.innerText.replace(/^To:\s*/i,'').trim() : '';
+
+        // avoid duplicates (by slug + time)
+        const slug = slugify(name);
+        const exists = scheduledReports.some(s => slugify(s.name) === slug && s.time === time);
+        if (!exists) {
+            scheduledReports.push({
+                id: genId(),
+                name,
+                time,
+                recipients,
+                active: true
+            });
+            added = true;
+        }
+    });
+
+    if (added) saveSchedulesToStorage();
+    // we will re-render below in initScheduleModule
+}
+
+/* Renders the schedule list from the scheduledReports array */
+function renderSchedules() {
+    const list = document.querySelector('.schedule-list');
+    if (!list) {
+        console.warn('No schedule-list found in DOM');
+        return;
+    }
+    // clear and re-render
+    list.innerHTML = '';
+    scheduledReports.forEach(s => {
+        const item = document.createElement('div');
+        item.className = 'schedule-item';
+        item.dataset.id = s.id;
+
+        const info = document.createElement('div');
+        info.className = 'schedule-info';
+        const h4 = document.createElement('h4');
+        h4.textContent = s.name;
+        const p = document.createElement('p');
+        p.textContent = s.time;
+        const rec = document.createElement('span');
+        rec.className = 'schedule-recipients';
+        rec.textContent = 'To: ' + (s.recipients || '');
+        info.appendChild(h4);
+        info.appendChild(p);
+        info.appendChild(rec);
+
+        const status = document.createElement('div');
+        status.className = 'schedule-status';
+        const statusSpan = document.createElement('span');
+        statusSpan.className = 'status-badge ' + (s.active ? 'success' : 'warning');
+        statusSpan.textContent = s.active ? 'Active' : 'Paused';
+        status.appendChild(statusSpan);
+
+        const actions = document.createElement('div');
+        actions.className = 'schedule-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn-secondary small';
+        editBtn.type = 'button';
+        editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+        editBtn.addEventListener('click', () => openScheduleModal('edit', s.id));
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn-danger small';
+        delBtn.type = 'button';
+        delBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+        delBtn.addEventListener('click', () => deleteScheduleById(s.id));
+
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
+
+        item.appendChild(info);
+        item.appendChild(status);
+        item.appendChild(actions);
+
+        list.appendChild(item);
+    });
+}
+
+/* find schedule by id or fallback to slug matching (keeps compatibility with legacy inline calls) */
+function findScheduleByIdentifier(identifier) {
+    if (!identifier) return null;
+    // if it's an id we stored, find directly
+    let s = scheduledReports.find(r => r.id === identifier);
+    if (s) return s;
+    // otherwise try match by slug or exact name
+    const normalized = String(identifier).toLowerCase();
+    s = scheduledReports.find(r => slugify(r.name) === slugify(normalized) || r.name.toLowerCase() === normalized);
+    return s || null;
+}
+
+/* Open modal for add or edit */
+function openScheduleModal(mode = 'add', id = null) {
+    // if edit, find object
+    const isEdit = mode === 'edit' && id;
+    const schedule = isEdit ? scheduledReports.find(s => s.id === id) : null;
+
+    // ensure only one modal exists at a time
+    closeScheduleModal();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'scheduleModal';
+    overlay.className = 'modal';
+    overlay.style.display = 'block';
+    overlay.innerHTML = `
+        <div class="modal-content" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3>${isEdit ? 'Edit Scheduled Report' : 'Schedule New Report'}</h3>
+                <button class="modal-close" id="closeScheduleModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="scheduleForm">
+                    <div class="form-group">
+                        <label>Report Name</label>
+                        <input id="sched_name" type="text" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Schedule (human readable)</label>
+                        <input id="sched_time" type="text" name="time" placeholder="e.g. Every Monday 9:00 AM" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Recipients (comma separated emails)</label>
+                        <input id="sched_recipients" type="text" name="recipients" placeholder="hr@company.com, manager@company.com" required>
+                    </div>
+                    <div class="form-actions" style="margin-top:10px;">
+                        <button type="submit" class="btn-primary">${isEdit ? 'Save Changes' : 'Save Schedule'}</button>
+                        <button type="button" class="btn-secondary" id="cancelScheduleBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    // populate values if edit
+    if (isEdit && schedule) {
+        document.getElementById('sched_name').value = schedule.name;
+        document.getElementById('sched_time').value = schedule.time;
+        document.getElementById('sched_recipients').value = schedule.recipients || '';
+    }
+
+    // close handlers
+    document.getElementById('closeScheduleModalBtn').addEventListener('click', closeScheduleModal);
+    document.getElementById('cancelScheduleBtn').addEventListener('click', closeScheduleModal);
+
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeScheduleModal();
+    });
+
+    const form = document.getElementById('scheduleForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = {
+            name: document.getElementById('sched_name').value.trim(),
+            time: document.getElementById('sched_time').value.trim(),
+            recipients: document.getElementById('sched_recipients').value.trim(),
+            active: true
+        };
+        if (!data.name) return showAlert('Please provide a report name.', 'warning');
+
+        if (isEdit && schedule) {
+            // update
+            schedule.name = data.name;
+            schedule.time = data.time;
+            schedule.recipients = data.recipients;
+            saveSchedulesToStorage();
+            renderSchedules();
+            closeScheduleModal();
+            showAlert(`Schedule "${data.name}" updated.`, 'success');
+        } else {
+            // add new
+            const newSched = { id: genId(), ...data };
+            scheduledReports.push(newSched);
+            saveSchedulesToStorage();
+            renderSchedules();
+            closeScheduleModal();
+            showAlert(`Scheduled report "${data.name}" added.`, 'success');
+        }
+    });
+}
+
+function closeScheduleModal() {
+    const modal = document.getElementById('scheduleModal');
+    if (modal) modal.remove();
+}
+
+/* delete by internal id */
+function deleteScheduleById(id) {
+    const idx = scheduledReports.findIndex(s => s.id === id);
+    if (idx === -1) return showAlert('Schedule not found', 'error');
+    const name = scheduledReports[idx].name;
+    if (!confirm(`Delete schedule "${name}"?`)) return;
+    scheduledReports.splice(idx, 1);
+    saveSchedulesToStorage();
+    renderSchedules();
+    showAlert(`Schedule "${name}" deleted.`, 'success');
+}
+</script>
+
+
+<%- include('partials/footer') %>

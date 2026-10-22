@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Campus2Career</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ── View / Edit mode ── */
+        .profile-view-mode { display: block; }
+        .profile-edit-mode { display: none;  }
+        .editing .profile-view-mode { display: none;  }
+        .editing .profile-edit-mode { display: block; }
+
+        /* ── Hero card ── */
+        .profile-hero {
+            background: linear-gradient(135deg, #6d6aa7 0%, #7c3aed 100%);
+            border-radius: 14px;
+            padding: 32px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        /* ── Avatar wrapper ── */
+        .avatar-wrapper {
+            position: relative;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .profile-avatar-img {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.6);
+            display: block;
+        }
+        .profile-avatar-placeholder {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem;
+            border: 3px solid rgba(255,255,255,0.4);
+        }
+        /* Camera overlay on hover */
+        .avatar-wrapper:hover .avatar-overlay {
+            opacity: 1;
+        }
+        .avatar-overlay {
+            position: absolute; inset: 0;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.45);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            opacity: 0; transition: opacity .2s;
+            font-size: .7rem; color: #fff; gap: 4px;
+        }
+        .avatar-overlay i { font-size: 1.2rem; }
+
+        .profile-hero-info { flex: 1; min-width: 200px; }
+        .profile-hero-info h2 { margin: 0 0 4px; font-size: 1.5rem; }
+        .profile-hero-info .hero-sub { margin: 0; opacity: .85; font-size: .95rem; }
+        .hero-contact { margin-top: 8px; opacity: .8; font-size: .88rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .hero-contact a { color: #fff; text-decoration: none; }
+        .hero-contact a:hover { text-decoration: underline; }
+
+        /* Social link badges in hero */
+        .social-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 20px; padding: 3px 10px;
+            font-size: .82rem; color: #fff;
+            text-decoration: none; transition: background .2s;
+        }
+        .social-badge:hover { background: rgba(255,255,255,0.3); }
+
+        /* ── Section card ── */
+        .profile-section-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .profile-section-card h3 {
+            margin: 0 0 18px;
+            font-size: 1rem;
+            color: #374151;
+            display: flex; align-items: center; gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .profile-section-card h3 i { color: #6366f1; }
+
+        /* ── Info grid ── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .info-item label {
+            display: block;
+            font-size: .72rem;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #9ca3af;
+            margin-bottom: 3px;
+        }
+        .info-item span { font-size: .93rem; color: #111827; font-weight: 500; }
+        .info-item span.empty { color: #d1d5db; font-style: italic; font-weight: 400; }
+        .info-item a { color: #6366f1; font-weight: 500; text-decoration: none; font-size: .93rem; }
+        .info-item a:hover { text-decoration: underline; }
+
+        /* ── Skill tags ── */
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .skill-tag {
+            background: #ede9fe; color: #5b21b6;
+            padding: 5px 14px; border-radius: 20px;
+            font-size: .82rem; font-weight: 500;
+        }
+
+        /* ── Resume card ── */
+        .resume-card {
+            display: flex; align-items: center; gap: 16px;
+            background: #fdf2f2; border: 1px dashed #fca5a5;
+            border-radius: 10px; padding: 16px 20px; flex-wrap: wrap;
+        }
+        .resume-icon { font-size: 2rem; color: #ef4444; }
+        .resume-info { flex: 1; min-width: 140px; }
+        .resume-name { font-weight: 600; color: #111827; }
+        .resume-sub  { font-size: .82rem; color: #6b7280; margin-top: 2px; }
+        .resume-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* ── Action bar ── */
+        .profile-action-bar {
+            display: flex; justify-content: flex-end; gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* ── Progress spinner ── */
+        .upload-progress {
+            display: none; align-items: center; gap: 8px;
+            font-size: .88rem; color: #6366f1; margin-top: 8px;
+        }
+
+        /* ── Profile completion bar ── */
+        .completion-bar-wrap { background: #e5e7eb; border-radius: 99px; height: 8px; }
+        .completion-bar-fill {
+            height: 8px; border-radius: 99px;
+            background: linear-gradient(90deg,#6366f1,#8b5cf6);
+            transition: width .4s;
+        }
+        .completion-label { font-size:.78rem; color:#6b7280; margin-top:4px; text-align:right; }
+
+        /* ── Form inputs full-width ── */
+        .settings-form .form-group textarea,
+        .settings-form .form-group input[type="text"],
+        .settings-form .form-group input[type="tel"],
+        .settings-form .form-group input[type="url"],
+        .settings-form .form-group input[type="number"],
+        .settings-form .form-group select { width: 100%; box-sizing: border-box; }
+
+        /* ── Edit-mode avatar ── */
+        .edit-avatar-area {
+            display: flex; align-items: center; gap: 20px;
+            padding: 16px; background: #f9fafb;
+            border: 1px solid #e5e7eb; border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .edit-avatar-area .edit-avatar-img {
+            width: 72px; height: 72px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #e5e7eb;
+        }
+        .edit-avatar-area .edit-avatar-placeholder {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: #ede9fe; display: flex; align-items: center;
+            justify-content: center; font-size: 1.8rem; color: #6366f1;
+        }
+        .edit-avatar-info { flex: 1; }
+        .edit-avatar-info p { margin: 0 0 8px; font-size: .85rem; color: #6b7280; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h2><i class="fas fa-graduation-cap"></i> Campus2Career</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="/student-dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/student-internships"><i class="fas fa-briefcase"></i> <span>Browse Jobs</span></a></li>
+                    <li><a href="/student-applications"><i class="fas fa-file-alt"></i> <span>My Applications</span></a></li>
+                    <li><a href="/student-profile" class="active"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <% if (profile.profileImage) { %>
+                        <!-- <img src="/uploads/profile-images/<%= profile.profileImage %>" -->
+                         <img src="<%= profile.profileImage %>"
+                             alt="avatar" style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;">
+                    <% } else { %>
+                        <i class="fas fa-user-circle"></i>
+                    <% } %>
+                    <span><%= user.name %></span>
+                </div>
+                <form action="/logout" method="POST" style="display:inline;">
+                    <button type="submit" class="btn-secondary small">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3>Navigation</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="/student-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="/student-internships"><i class="fas fa-search"></i> Find Internships</a></li>
+                        <li><a href="/student-applications"><i class="fas fa-file-alt"></i> My Applications</a></li>
+                        <li><a href="/student-profile" class="active"><i class="fas fa-user-edit"></i> My Profile</a></li>
+                        <li><a href="/blogs"> <i class="fas fa-lightbulb"></i>Tech Blogs</a></li>
+                        <li><a href="/news"> <i class="fas fa-newspaper"></i>Latest News</a></li> 
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Profile Completion</h3>
+                    <%
+                        const fields = [
+                            profile.fullName, profile.phone, profile.university, profile.major,
+                            profile.graduationYear, profile.about,
+                            profile.skills && profile.skills.length,
+                            profile.resume, profile.profileImage,
+                            profile.linkedin, profile.github
+                        ];
+                        const filled = fields.filter(Boolean).length;
+                        const pct    = Math.round((filled / fields.length) * 100);
+                    %>
+                    <div class="completion-bar-wrap">
+                        <div class="completion-bar-fill" style="width:<%= pct %>%"></div>
+                    </div>
+                    <div class="completion-label"><%= pct %>% complete</div>
+                </div>
+
+                <div class="help-card">
+                    <h4>Profile Tips</h4>
+                    <p>Add your photo, GitHub and LinkedIn to stand out to recruiters!</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="profilePage">
+
+            <div id="alertArea"></div>
+
+            <div class="page-header">
+                <h1><i class="fas fa-user-circle"></i> My Profile</h1>
+                <p>Keep your profile updated to increase your chances of getting hired</p>
+            </div>
+
+            <!-- ══════════════════ VIEW MODE ══════════════════ -->
+            <div class="profile-view-mode">
+
+                <!-- Hidden file input for avatar click-to-change in view mode -->
+                <input type="file" id="avatarInputView" accept="image/jpeg,image/png,image/webp" style="display:none;">
+
+                <!-- Hero Card -->
+                <div class="profile-hero">
+                    <!-- Clickable avatar -->
+                    <div class="avatar-wrapper" onclick="document.getElementById('avatarInputView').click()" title="Change photo">
+                        <% if (profile.profileImage) { %>
+                            <!-- <img src="/uploads/profile-images/<%= profile.profileImage %>" -->
+                            <img src="<%= profile.profileImage %>"
+                                 alt="Profile Photo" class="profile-avatar-img">
+                        <% } else { %>
+                            <div class="profile-avatar-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        <% } %>
+                        <div class="avatar-overlay">
+                            <i class="fas fa-camera"></i>
+                            <span>Change</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-hero-info">
+                        <h2><%= profile.fullName || user.name %></h2>
+                        <p class="hero-sub">
+                            <%= profile.major ? profile.major + ' · ' : '' %><%= profile.university || 'University not set' %>
+                            <% if (profile.graduationYear) { %> · Class of <%= profile.graduationYear %><% } %>
+                        </p>
+                        <div class="hero-contact">
+                            <span><i class="fas fa-envelope"></i> <%= user.email %></span>
+                            <% if (profile.phone) { %>
+                                <span><i class="fas fa-phone"></i> <%= profile.phone %></span>
+                            <% } %>
+                            <% if (profile.location) { %>
+                                <span><i class="fas fa-map-marker-alt"></i> <%= profile.location %></span>
+                            <% } %>
+                            <% if (profile.linkedin) { %>
+                                <a href="<%= profile.linkedin %>" target="_blank" class="social-badge">
+                                    <i class="fab fa-linkedin"></i> LinkedIn
+                                </a>
+                            <% } %>
+                            <% if (profile.github) { %>
+                                <a href="<%= profile.github %>" target="_blank" class="social-badge">
+                                    <i class="fab fa-github"></i> GitHub
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div style="margin-left:auto;align-self:flex-start;">
+                        <button onclick="enableEdit()" class="btn-primary">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Image upload progress (view mode) -->
+                <div id="imgProgressView" class="upload-progress" style="margin-bottom:12px;">
+                    <i class="fas fa-spinner fa-spin"></i> Uploading photo…
+                </div>
+
+                <!-- About -->
+                <% if (profile.about) { %>
+                <div class="profile-section-card">
+                    <h3><i class="fas fa-info-circle"></i> About Me</h3>
+                    <p style="color:#374151;line-height:1.75;margin:0;"><%= profile.about %></p>
+                </div>
+                <% } %>
+
+                <!-- Personal Details -->
+                <div class="profile-section-card">
+                    <h3><i class="fas fa-id-card"></i> Personal Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Full Name</label>
+                            <span class="<%= profile.fullName ? '' : 'empty' %>"><%= profile.fullName || 'Not set' %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Email</label>
+                            <span><%= user.email %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Phone</label>
+                            <span class="<%= profile.phone ? '' : 'empty' %>"><%= profile.phone || 'Not set' %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>University</label>
+                            <span class="<%= profile.university ? '' : 'empty' %>"><%= profile.university || 'Not set' %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Major</label>
+                            <span class="<%= profile.major ? '' : 'empty' %>"><%= profile.major || 'Not set' %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Graduation Year</label>
+                            <span class="<%= profile.graduationYear ? '' : 'empty' %>"><%= profile.graduationYear || 'Not set' %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>GPA</label>
+                            <span class="<%= profile.gpa ? '' : 'empty' %>"><%= profile.gpa || 'Not provided' %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Location</label>
+                            <span class="<%= profile.location ? '' : 'empty' %>"><%= profile.location || 'Not set' %></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                <div class="profile-section-card">
+                    <h3><i class="fas fa-link"></i> Social Links</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label><i class="fab fa-linkedin" style="color:#0a66c2;"></i> LinkedIn</label>
+                            <% if (profile.linkedin) { %>
+                                <a href="<%= profile.linkedin %>" target="_blank"><%= profile.linkedin %></a>
+                            <% } else { %>
+                                <span class="empty">Not added</span>
+                            <% } %>
+                        </div>
+                        <div class="info-item">
+                            <label><i class="fab fa-github" style="color:#24292e;"></i> GitHub</label>
+                            <% if (profile.github) { %>
+                                <a href="<%= profile.github %>" target="_blank"><%= profile.github %></a>
+                            <% } else { %>
+                                <span class="empty">Not added</span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="profile-section-card">
+                    <h3><i class="fas fa-cogs"></i> Skills</h3>
+                    <% if (profile.skills && profile.skills.length > 0) { %>
+                        <div class="skill-tags">
+                            <% profile.skills.forEach(skill => { %>
+                                <span class="skill-tag"><%= skill %></span>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <p style="color:#9ca3af;font-style:italic;margin:0;">No skills added yet.</p>
+                    <% } %>
+                </div>
+
+                <!-- Experience -->
+                <% if (profile.experience) { %>
+                <div class="profile-section-card">
+                    <h3><i class="fas fa-briefcase"></i> Work Experience</h3>
+                    <p style="color:#374151;white-space:pre-wrap;line-height:1.75;margin:0;"><%= profile.experience %></p>
+                </div>
+                <% } %>
+
+                <!-- Projects -->
+                <% if (profile.projects) { %>
+                <div class="profile-section-card">
+                    <h3><i class="fas fa-project-diagram"></i> Projects</h3>
+                    <p style="color:#374151;white-space:pre-wrap;line-height:1.75;margin:0;"><%= profile.projects %></p>
+                </div>
+                <% } %>
+
+                <!-- Resume -->
+                <div class="profile-section-card">
+                    <h3><i class="fas fa-file-pdf"></i> Resume</h3>
+                    <div class="resume-card">
+                        <div class="resume-icon"><i class="fas fa-file-pdf"></i></div>
+                        <div class="resume-info">
+                            <% if (profile.resume) { %>
+                                <div class="resume-name"><%= profile.resumeOrigName || profile.resume %></div>
+                                <div class="resume-sub">
+                                    Uploaded<% if (profile.resumeUpdatedAt) { %> on <%= new Date(profile.resumeUpdatedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) %><% } %>
+                                </div>
+                            <% } else { %>
+                                <div class="resume-name" style="color:#9ca3af;font-style:italic;">No resume uploaded</div>
+                                <div class="resume-sub">Upload your latest resume (PDF only, max 5 MB)</div>
+                            <% } %>
+                        </div>
+                        <div class="resume-actions">
+                            <input type="file" id="resumeUploadView" accept=".pdf" style="display:none;">
+                            <button type="button" onclick="document.getElementById('resumeUploadView').click()" class="btn-secondary small">
+                                <i class="fas fa-upload"></i> <%= profile.resume ? 'Replace' : 'Upload' %>
+                            </button>
+                            <% if (profile.resume) { %>
+                            <button type="button" onclick="downloadResume()" class="btn-primary small">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div id="resumeProgressView" class="upload-progress">
+                        <i class="fas fa-spinner fa-spin"></i> Uploading resume…
+                    </div>
+                </div>
+
+            </div><!-- /profile-view-mode -->
+
+
+            <!-- ══════════════════ EDIT MODE ══════════════════ -->
+            <div class="profile-edit-mode">
+
+                <div class="profile-action-bar">
+                    <button type="button" onclick="cancelEdit()" class="btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" form="profileForm" class="btn-primary" id="saveBtn">
+                        <i class="fas fa-save"></i> Save Profile
+                    </button>
+                </div>
+
+                <div class="applicant-detail-container">
+
+                    <!-- Profile Photo (edit mode) -->
+                    <section class="applicant-profile-section" style="margin-bottom:20px;">
+                        <div class="section-header">
+                            <h2><i class="fas fa-camera"></i> Profile Photo</h2>
+                        </div>
+                        <div class="edit-avatar-area">
+                            <% if (profile.profileImage) { %>
+                                <img id="editAvatarPreview"
+                                     
+                                     src="<%= profile.profileImage %>"
+                                     alt="Profile" class="edit-avatar-img">
+                            <% } else { %>
+                                <div id="editAvatarPreview" class="edit-avatar-placeholder">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            <% } %>
+                            <div class="edit-avatar-info">
+                                <p>JPG, PNG or WEBP · Max 3 MB</p>
+                                <input type="file" id="avatarInputEdit" accept="image/jpeg,image/png,image/webp" style="display:none;">
+                                <button type="button" onclick="document.getElementById('avatarInputEdit').click()" class="btn-secondary small">
+                                    <i class="fas fa-camera"></i> Choose Photo
+                                </button>
+                            </div>
+                        </div>
+                        <div id="imgProgressEdit" class="upload-progress">
+                            <i class="fas fa-spinner fa-spin"></i> Uploading photo…
+                        </div>
+                    </section>
+
+                    <!-- Personal Information -->
+                    <section class="applicant-profile-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-user"></i> Personal Information</h2>
+                        </div>
+                        <form id="profileForm" class="settings-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name *</label>
+                                    <input type="text" id="fullName" name="fullName"
+                                           value="<%= profile.fullName || user.name || '' %>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" value="<%= user.email %>" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number *</label>
+                                    <input type="tel" id="phone" name="phone"
+                                           value="<%= profile.phone || '' %>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="university">University/College *</label>
+                                    <input type="text" id="university" name="university"
+                                           value="<%= profile.university || '' %>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="major">Major/Field of Study *</label>
+                                    <input type="text" id="major" name="major"
+                                           value="<%= profile.major || '' %>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="graduationYear">Graduation Year *</label>
+                                    <select id="graduationYear" name="graduationYear" required>
+                                        <option value="">Select Year</option>
+                                        <% ['2024','2025','2026','2027','2028'].forEach(yr => { %>
+                                            <option value="<%= yr %>" <%= profile.graduationYear === yr ? 'selected' : '' %>><%= yr %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="gpa">GPA (Optional)</label>
+                                    <input type="number" id="gpa" name="gpa"
+                                           min="0" max="4" step="0.01" value="<%= profile.gpa || '' %>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="location">Current Location</label>
+                                    <input type="text" id="location" name="location"
+                                           value="<%= profile.location || '' %>">
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="about">About Me</label>
+                                <textarea id="about" name="about" rows="4"
+                                    placeholder="Tell employers about yourself, your interests, and career goals…"><%= profile.about || '' %></textarea>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Social Links -->
+                    <section class="detail-section">
+                        <h3><i class="fas fa-link"></i> Social Links</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="linkedin">
+                                    <i class="fab fa-linkedin" style="color:#0a66c2;"></i> LinkedIn URL
+                                </label>
+                                <input type="url" id="linkedin" name="linkedin" form="profileForm"
+                                       value="<%= profile.linkedin || '' %>"
+                                       placeholder="https://linkedin.com/in/your-profile">
+                            </div>
+                            <div class="form-group">
+                                <label for="github">
+                                    <i class="fab fa-github" style="color:#24292e;"></i> GitHub URL
+                                </label>
+                                <input type="url" id="github" name="github" form="profileForm"
+                                       value="<%= profile.github || '' %>"
+                                       placeholder="https://github.com/your-username">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Skills & Experience -->
+                    <section class="detail-section">
+                        <h3><i class="fas fa-cogs"></i> Skills & Experience</h3>
+                        <div class="form-group">
+                            <label for="skills">Technical Skills (comma-separated)</label>
+                            <input type="text" id="skills" name="skills" form="profileForm"
+                                   value="<%= profile.skills ? profile.skills.join(', ') : '' %>"
+                                   placeholder="e.g., JavaScript, Python, React, SQL">
+                        </div>
+                        <div class="form-group">
+                            <label for="experience">Work Experience (Optional)</label>
+                            <textarea id="experience" name="experience" form="profileForm" rows="4"
+                                placeholder="Describe any relevant work experience or internships…"><%= profile.experience || '' %></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="projects">Notable Projects (Optional)</label>
+                            <textarea id="projects" name="projects" form="profileForm" rows="3"
+                                placeholder="Briefly describe 1–2 projects you're proud of…"><%= profile.projects || '' %></textarea>
+                        </div>
+                    </section>
+
+                    <!-- Resume (edit mode) -->
+                    <section class="detail-section">
+                        <h3><i class="fas fa-file-pdf"></i> Resume</h3>
+                        <div class="resume-card">
+                            <div class="resume-icon"><i class="fas fa-file-pdf"></i></div>
+                            <div class="resume-info">
+                                <% if (profile.resume) { %>
+                                    <div class="resume-name"><%= profile.resumeOrigName || profile.resume %></div>
+                                    <div class="resume-sub">Click "Replace" to upload a new version</div>
+                                <% } else { %>
+                                    <div class="resume-name" style="color:#9ca3af;font-style:italic;">No resume uploaded</div>
+                                    <div class="resume-sub">PDF only · max 5 MB</div>
+                                <% } %>
+                            </div>
+                            <div class="resume-actions">
+                                <input type="file" id="resumeUploadEdit" accept=".pdf" style="display:none;">
+                                <button type="button" onclick="document.getElementById('resumeUploadEdit').click()" class="btn-secondary small">
+                                    <i class="fas fa-upload"></i> <%= profile.resume ? 'Replace' : 'Upload' %>
+                                </button>
+                                <% if (profile.resume) { %>
+                                <button type="button" onclick="downloadResume()" class="btn-primary small">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div id="resumeProgressEdit" class="upload-progress">
+                            <i class="fas fa-spinner fa-spin"></i> Uploading resume…
+                        </div>
+                    </section>
+
+                </div>
+            </div><!-- /profile-edit-mode -->
+
+        </main>
+    </div>
+
+    <script>
+        // ── Mode toggle ────────────────────────────────────────────────────────
+        const page = document.getElementById('profilePage');
+
+        function enableEdit() {
+            page.classList.add('editing');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function cancelEdit() {
+            if (confirm('Discard unsaved changes?')) page.classList.remove('editing');
+        }
+
+        // ── Profile form save ─────────────────────────────────────────────────
+        document.getElementById('profileForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const data = {};
+            for (let [k, v] of new FormData(this).entries()) {
+                data[k] = k === 'skills'
+                    ? v.split(',').map(s => s.trim()).filter(Boolean)
+                    : v;
+            }
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+            try {
+                const r = await fetch('/api/student/profile', {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const res = await r.json();
+                if (res.success) {
+                    showAlert('Profile saved successfully!', 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    showAlert('Error saving profile. Please try again.', 'error');
+                }
+            } catch { showAlert('Network error. Please try again.', 'error'); }
+            finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Save Profile';
+            }
+        });
+
+        // ── Profile image upload ──────────────────────────────────────────────
+        async function uploadImage(file, progressId, previewId) {
+            if (!file) return;
+            const allowed = ['image/jpeg','image/png','image/webp'];
+            if (!allowed.includes(file.type)) { showAlert('Only JPG, PNG or WEBP images allowed.', 'error'); return; }
+            if (file.size > 3 * 1024 * 1024)  { showAlert('Image must be under 3 MB.', 'error'); return; }
+
+            // Instant local preview
+            const reader = new FileReader();
+            reader.onload = e => {
+                const el = document.getElementById(previewId);
+                if (!el) return;
+                if (el.tagName === 'IMG') {
+                    el.src = e.target.result;
+                } else {
+                    // Replace placeholder div with an img
+                    const img = document.createElement('img');
+                    img.id        = previewId;
+                    img.src       = e.target.result;
+                    img.className = el.className.replace('placeholder','img').replace('edit-avatar-placeholder','edit-avatar-img');
+                    if (previewId === 'editAvatarPreview') img.className = 'edit-avatar-img';
+                    el.replaceWith(img);
+                }
+            };
+            reader.readAsDataURL(file);
+
+            document.getElementById(progressId).style.display = 'flex';
+            const fd = new FormData();
+            fd.append('profileImage', file);
+            try {
+                const r   = await fetch('/api/student/profile-image', { method: 'POST', body: fd });
+                const res = await r.json();
+                if (res.success) {
+                    showAlert('Photo updated!', 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    showAlert(res.error || 'Upload failed.', 'error');
+                }
+            } catch { showAlert('Network error during upload.', 'error'); }
+            finally  { document.getElementById(progressId).style.display = 'none'; }
+        }
+
+        document.getElementById('avatarInputView').addEventListener('change', e =>
+            uploadImage(e.target.files[0], 'imgProgressView', /* no preview needed, reloads */ 'imgProgressView'));
+        document.getElementById('avatarInputEdit').addEventListener('change', e =>
+            uploadImage(e.target.files[0], 'imgProgressEdit', 'editAvatarPreview'));
+
+        // ── Resume upload ─────────────────────────────────────────────────────
+        async function uploadResume(file, progressId) {
+            if (!file) return;
+            if (file.type !== 'application/pdf')   { showAlert('Please upload a PDF file only.', 'error'); return; }
+            if (file.size > 5 * 1024 * 1024)       { showAlert('File must be under 5 MB.', 'error'); return; }
+            document.getElementById(progressId).style.display = 'flex';
+            const fd = new FormData();
+            fd.append('resume', file);
+            try {
+                const r   = await fetch('/api/student/resume', { method: 'POST', body: fd });
+                const res = await r.json();
+                if (res.success) {
+                    showAlert('Resume uploaded!', 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    showAlert(res.error || 'Upload failed.', 'error');
+                }
+            } catch { showAlert('Network error during upload.', 'error'); }
+            finally  { document.getElementById(progressId).style.display = 'none'; }
+        }
+
+        document.getElementById('resumeUploadView').addEventListener('change', e =>
+            uploadResume(e.target.files[0], 'resumeProgressView'));
+        document.getElementById('resumeUploadEdit').addEventListener('change', e =>
+            uploadResume(e.target.files[0], 'resumeProgressEdit'));
+
+        // ── Resume download ───────────────────────────────────────────────────
+        // function downloadResume() { window.location.href = '/api/student/resume/download'; }
+       function downloadResume() {
+    const pdfUrl = '<%= profile.resume %>';
+    window.open('https://docs.google.com/viewer?url=' + encodeURIComponent(pdfUrl), '_blank');
+}
+
+        // ── Alert helper ──────────────────────────────────────────────────────
+        function showAlert(msg, type) {
+            const area = document.getElementById('alertArea');
+            const bg   = type === 'success' ? '#d1fae5' : '#fee2e2';
+            const bd   = type === 'success' ? '#6ee7b7' : '#fca5a5';
+            const cl   = type === 'success' ? '#065f46' : '#991b1b';
+            const ic   = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            area.innerHTML = `
+                <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;
+                    border-radius:8px;margin-bottom:16px;background:${bg};border:1px solid ${bd};color:${cl};">
+                    <i class="fas ${ic}"></i><span>${msg}</span>
+                </div>`;
+            setTimeout(() => { area.innerHTML = ''; }, 5000);
+        }
+    </script>
+</body>
+</html>

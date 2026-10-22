@@ -1,0 +1,15 @@
+{
+  "testEnvironment": "node",
+  "testMatch": [
+    "**/tests/**/*.test.js"
+  ],
+  "testTimeout": 30000,
+  "verbose": true,
+  "collectCoverage": false,
+  "coverageDirectory": "coverage",
+  "coveragePathIgnorePatterns": [
+    "/node_modules/",
+    "/tests/"
+  ],
+  "coverageReporters": ["text", "lcov", "html"]
+}

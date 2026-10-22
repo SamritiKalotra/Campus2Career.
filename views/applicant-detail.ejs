@@ -1,0 +1,201 @@
+<%- include('partials/header') %>
+
+<div class="main-container">
+    <%- include('partials/sidebar', { page: 'applicants' }) %>
+    
+    <main class="main-content">
+        <div class="page-header">
+            <div class="header-with-back">
+                <button class="btn-secondary" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i> Back to Applicants
+                </button>
+                <div>
+                    <h1>Applicant Details</h1>
+                    <p>Review comprehensive application information</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="applicant-detail-container">
+            <div class="applicant-profile-section">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="applicantName">Loading...</h2>
+                        <p id="applicantEmail">Loading...</p>
+                        <span id="applicationStatus" class="status-badge">Loading...</span>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="btn-primary" onclick="updateStatus('shortlisted')">
+                            <i class="fas fa-star"></i> Shortlist
+                        </button>
+                        <button class="btn-danger" onclick="updateStatus('rejected')">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-sections">
+                <div class="detail-section">
+                    <h3><i class="fas fa-briefcase"></i> Applied Position</h3>
+                    <div class="detail-content">
+                        <div class="info-row">
+                            <span class="label">Position:</span>
+                            <span id="positionTitle">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Department:</span>
+                            <span id="positionDepartment">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Applied Date:</span>
+                            <span id="appliedDate">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Application ID:</span>
+                            <span id="applicationId">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-file-text"></i> Cover Letter</h3>
+                    <div class="detail-content">
+                        <div class="cover-letter-full" id="coverLetterContent">
+                            Loading cover letter...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-file-pdf"></i> Resume & Documents</h3>
+                    <div class="detail-content">
+                        <div class="documents-list">
+                            <div class="document-item" id="resumeDoc">
+                                <div class="doc-info">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <div>
+                                        <span class="doc-name" id="resumeName">Resume.pdf</span>
+                                        <span class="doc-size">Size: ~250KB</span>
+                                    </div>
+                                </div>
+                                <div class="doc-actions">
+                                    <button class="btn-secondary small" onclick="downloadDocument('resume')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <button class="btn-primary small" onclick="viewDocument('resume')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-graduation-cap"></i> Education & Skills</h3>
+                    <div class="detail-content">
+                        <div class="skills-placeholder">
+                            <p><strong>Education:</strong> Computer Science Student</p>
+                            <p><strong>University:</strong> Example University</p>
+                            <p><strong>Expected Graduation:</strong> May 2025</p>
+                            <p><strong>GPA:</strong> 3.8/4.0</p>
+                            <br>
+                            <p><strong>Key Skills:</strong></p>
+                            <div class="skills-tags">
+                                <span class="skill-tag">JavaScript</span>
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">Node.js</span>
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">SQL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-comments"></i> Internal Notes</h3>
+                    <div class="detail-content">
+                        <textarea 
+                            id="internalNotes" 
+                            placeholder="Add internal notes about this candidate..."
+                            rows="4"
+                        ></textarea>
+                        <button class="btn-primary small" onclick="saveNotes()">
+                            <i class="fas fa-save"></i> Save Notes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+// Mock data for demonstration - in real app, this would come from API
+const mockApplicantData = {
+    id: 'app-001',
+    studentName: 'John Doe',
+    studentEmail: 'john.doe@university.edu',
+    status: 'pending',
+    internshipTitle: 'Software Development Intern',
+    internshipDepartment: 'Technology',
+    appliedDate: '2024-01-16',
+    coverLetter: 'Dear Hiring Manager,\n\nI am writing to express my strong interest in the Software Development Intern position at your company. As a Computer Science student with a passion for innovative technology solutions, I am excited about the opportunity to contribute to your team while gaining valuable industry experience.\n\nThroughout my academic journey, I have developed strong programming skills in JavaScript, Python, and Java. I have completed several projects including a full-stack web application using React and Node.js, and a machine learning project that analyzes customer behavior patterns. My coursework in algorithms, data structures, and software engineering has provided me with a solid foundation in computer science principles.\n\nWhat particularly attracts me to your company is your commitment to cutting-edge technology and innovation. I am eager to learn from experienced professionals and contribute fresh perspectives to your projects. I am a quick learner, detail-oriented, and thrive in collaborative environments.\n\nI would welcome the opportunity to discuss how my skills and enthusiasm can contribute to your team. Thank you for considering my application.\n\nSincerely,\nJohn Doe',
+    resume: 'john_doe_resume.pdf'
+};
+
+// Initialize page with mock data
+document.addEventListener('DOMContentLoaded', function() {
+    loadApplicantData();
+});
+
+function loadApplicantData() {
+    const data = mockApplicantData;
+    
+    document.getElementById('applicantName').textContent = data.studentName;
+    document.getElementById('applicantEmail').textContent = data.studentEmail;
+    
+    const statusBadge = document.getElementById('applicationStatus');
+    statusBadge.textContent = data.status;
+    statusBadge.className = `status-badge ${data.status}`;
+    
+    document.getElementById('positionTitle').textContent = data.internshipTitle;
+    document.getElementById('positionDepartment').textContent = data.internshipDepartment;
+    document.getElementById('appliedDate').textContent = new Date(data.appliedDate).toLocaleDateString();
+    document.getElementById('applicationId').textContent = data.id;
+    document.getElementById('coverLetterContent').innerHTML = data.coverLetter.replace(/\n/g, '<br>');
+    document.getElementById('resumeName').textContent = data.resume;
+}
+
+function updateStatus(newStatus) {
+    // In real app, this would make an API call
+    const statusBadge = document.getElementById('applicationStatus');
+    statusBadge.textContent = newStatus;
+    statusBadge.className = `status-badge ${newStatus}`;
+    
+    showAlert(`Application ${newStatus} successfully!`, 'success');
+}
+
+function downloadDocument(type) {
+    showAlert(`Download functionality for ${type} would be implemented here.`, 'info');
+}
+
+function viewDocument(type) {
+    showAlert(`Document viewer for ${type} would open here.`, 'info');
+}
+
+function saveNotes() {
+    const notes = document.getElementById('internalNotes').value;
+    if (notes.trim()) {
+        showAlert('Notes saved successfully!', 'success');
+    } else {
+        showAlert('Please enter some notes before saving.', 'error');
+    }
+}
+</script>
+
+<%- include('partials/footer') %>

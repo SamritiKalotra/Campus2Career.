@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= internship.title %> - Campus2Career</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h2><i class="fas fa-graduation-cap"></i> Campus2Career</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="/student-dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/student-internships"><i class="fas fa-briefcase"></i> <span>Browse Jobs</span></a></li>
+                    <li><a href="/student-applications"><i class="fas fa-file-alt"></i> <span>My Applications</span></a></li>
+                    <li><a href="/student-profile"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span><%= user.email %></span>
+                </div>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-secondary small">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3>Navigation</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="/student-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="/student-internships"><i class="fas fa-search"></i> Find Internships</a></li>
+                        <li><a href="/student-applications"><i class="fas fa-file-alt"></i> My Applications</a></li>
+                        <li><a href="/student-profile"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+                        <li><a href="/blogs"> <i class="fas fa-lightbulb"></i>Tech Blogs</a></li>
+                        <li><a href="/news"> <i class="fas fa-newspaper"></i>Latest News</a></li> 
+                    </ul>
+                </div>
+
+                <div class="help-card">
+                    <h4>Application Tips</h4>
+                    <p>Read the job requirements carefully before applying!</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Back Button -->
+            <div class="header-with-back">
+                <a href="/student-internships" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Internships
+                </a>
+            </div>
+
+            <!-- Internship Details -->
+            <div class="applicant-detail-container">
+                <!-- Main Info Section -->
+                <section class="applicant-profile-section">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2><%= internship.title %></h2>
+                            <p><%= internship.department %> Department</p>
+                            <div class="profile-actions">
+                                <% if (hasApplied) { %>
+                                <button class="btn-success" disabled>
+                                    <i class="fas fa-check"></i> Already Applied
+                                </button>
+                                <% } else { %>
+                                <a href="/apply-internship/<%= internship.id %>" class="btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Apply Now
+                                </a>
+                                <% } %>
+                                <button onclick="window.print()" class="btn-secondary">
+                                    <i class="fas fa-print"></i> Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Details Sections -->
+                <div class="detail-sections">
+                    <!-- Basic Information -->
+                    <section class="detail-section">
+                        <h3><i class="fas fa-info-circle"></i> Position Details</h3>
+                        <div class="info-row">
+                            <span class="label">Department:</span>
+                            <span><%= internship.department %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Location:</span>
+                            <span><%= internship.location %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Duration:</span>
+                            <span><%= internship.duration %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Type:</span>
+                            <span><%= internship.type || 'Full-time' %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Stipend:</span>
+                            <span><%= internship.stipend %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Posted Date:</span>
+                            <span><%= new Date(internship.postedDate).toLocaleDateString() %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Status:</span>
+                            <span class="status-badge <%= internship.status %>"><%= internship.status %></span>
+                        </div>
+                    </section>
+
+                    <!-- Job Description -->
+                    <section class="detail-section">
+                        <h3><i class="fas fa-file-alt"></i> Job Description</h3>
+                        <div class="cover-letter-full">
+                            <%= internship.description %>
+                        </div>
+                    </section>
+
+                    <!-- Requirements -->
+                    <section class="detail-section">
+                        <h3><i class="fas fa-list-check"></i> Requirements</h3>
+                        <div class="cover-letter-full">
+                            <%= internship.requirements || 'No specific requirements listed.' %>
+                        </div>
+                    </section>
+
+                    <!-- Skills (if available) -->
+                    <% if (internship.skills && internship.skills.length > 0) { %>
+                    <section class="detail-section">
+                        <h3><i class="fas fa-cogs"></i> Required Skills</h3>
+                        <div class="skills-tags">
+                            <% internship.skills.forEach(skill => { %>
+                            <span class="skill-tag"><%= skill %></span>
+                            <% }) %>
+                        </div>
+                    </section>
+                    <% } %>
+
+                    <!-- Application Stats -->
+                    <section class="detail-section">
+                        <h3><i class="fas fa-chart-bar"></i> Application Statistics</h3>
+                        <div class="info-row">
+                            <span class="label">Total Applications:</span>
+                            <span><%= internship.applicationsCount || 0 %> candidates</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Views:</span>
+                            <span><%= internship.viewsCount || 0 %> views</span>
+                        </div>
+                        <% if (internship.deadline) { %>
+                        <div class="info-row">
+                            <span class="label">Application Deadline:</span>
+                            <span><%= new Date(internship.deadline).toLocaleDateString() %></span>
+                        </div>
+                        <% } %>
+                    </section>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <% if (hasApplied) { %>
+                    <a href="/student-applications" class="btn-primary">
+                        <i class="fas fa-eye"></i> View My Application
+                    </a>
+                    <% } else { %>
+                    <a href="/apply-internship/<%= internship.id %>" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i> Apply for This Position
+                    </a>
+                    <% } %>
+                    <a href="/student-internships" class="btn-secondary">
+                        <i class="fas fa-search"></i> Browse More Jobs
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Track view count when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch(`/api/internships/<%= internship.id %>/view`, { method: 'POST' })
+                .catch(error => console.log('View tracking error:', error));
+        });
+    </script>
+</body>
+</html>

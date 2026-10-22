@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industry News - Campus2Career</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .nav a.active { font-weight:700; border-bottom:2px solid rgba(255,255,255,.75); }
+
+        /* ── Hero ── */
+        .news-hero {
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            border-radius:1.5rem; padding:2.5rem 3rem; margin-bottom:2rem;
+            color:#fff; display:flex; align-items:center;
+            justify-content:space-between; gap:2rem; flex-wrap:wrap;
+        }
+        .news-hero-text h1 { font-size:2rem; font-weight:700; margin-bottom:.4rem; }
+        .news-hero-text p  { opacity:.88; font-size:1rem; }
+        .news-hero-icon    { font-size:4rem; opacity:.18; flex-shrink:0; }
+
+        /* ── Stats row ── */
+        .news-stats { display:flex; gap:1.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+        .news-stat {
+            background:#fff; border:1px solid #e2e8f0; border-radius:.75rem;
+            padding:.6rem 1.15rem; display:flex; align-items:center; gap:.5rem;
+            font-size:.84rem; color:#64748b; font-weight:500;
+            box-shadow:0 2px 4px rgba(0,0,0,.04);
+        }
+        .news-stat i      { color:#667eea; }
+        .news-stat strong { color:#1e293b; font-size:.95rem; }
+
+        /* ── Toolbar ── */
+        .news-toolbar {
+            background:#fff; border:1px solid #e2e8f0; border-radius:1rem;
+            padding:1.2rem 1.5rem; margin-bottom:1.75rem;
+            display:flex; gap:1rem; align-items:center; flex-wrap:wrap;
+            box-shadow:0 2px 6px rgba(0,0,0,.04);
+        }
+        .search-wrap { flex:1; min-width:200px; position:relative; }
+        .search-wrap i {
+            position:absolute; left:14px; top:50%;
+            transform:translateY(-50%); color:#9ca3af; font-size:.9rem;
+        }
+        .search-wrap input {
+            width:100%; padding:.65rem .75rem .65rem 2.4rem;
+            border:1px solid #d1d5db; border-radius:.5rem; font-size:.9rem;
+            transition:border-color .2s,box-shadow .2s;
+        }
+        .search-wrap input:focus {
+            outline:none; border-color:#667eea;
+            box-shadow:0 0 0 3px rgba(102,126,234,.12);
+        }
+        .filter-tags { display:flex; gap:.5rem; flex-wrap:wrap; }
+        .filter-btn {
+            padding:.45rem 1rem; border:1.5px solid #e2e8f0;
+            border-radius:9999px; background:#f8fafc; color:#64748b;
+            font-size:.82rem; font-weight:600; cursor:pointer; transition:all .2s;
+        }
+        .filter-btn:hover  { border-color:#667eea; color:#667eea; }
+        .filter-btn.active {
+            background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            border-color:transparent; color:#fff;
+        }
+
+        /* ── Hackathon callout ── */
+        .hackathon-callout {
+            background:#fffbeb; border:1.5px solid #f59e0b;
+            border-radius:1rem; padding:1.1rem 1.4rem; margin-bottom:1.5rem;
+            display:flex; align-items:center; gap:1rem; flex-wrap:wrap;
+        }
+        .hackathon-callout i  { font-size:1.6rem; color:#d97706; }
+        .hackathon-callout h3 { margin:0 0 .15rem; font-size:.95rem; color:#92400e; font-weight:700; }
+        .hackathon-callout p  { margin:0; font-size:.82rem; color:#b45309; }
+
+        /* ── Grid ── */
+        .news-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+            gap:1.5rem; margin-bottom:2rem;
+        }
+
+        /* ── Card ── */
+        .news-card {
+            background:#fff; border:1px solid #e2e8f0; border-radius:1rem;
+            overflow:hidden; display:flex; flex-direction:column;
+            transition:transform .25s ease,box-shadow .25s ease; cursor:pointer;
+        }
+        .news-card:hover {
+            transform:translateY(-4px);
+            box-shadow:0 10px 25px -5px rgba(0,0,0,.15);
+        }
+
+        /* ── Cover image area ── */
+        .news-cover-wrap {
+            position:relative; width:100%; height:170px; overflow:hidden;
+            flex-shrink:0;
+        }
+        /* Real image (from Unsplash) */
+        .news-cover-img {
+            width:100%; height:100%; object-fit:cover; display:block;
+            transition:transform .35s ease;
+        }
+        .news-card:hover .news-cover-img { transform:scale(1.04); }
+
+        /* Fallback illustrated placeholder — gradient + large icon + pattern */
+        .news-cover-ph {
+            width:100%; height:170px;
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            position:relative; overflow:hidden;
+        }
+        /* per-category gradient backgrounds */
+        .cov-hackathon  { background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%); }
+        .cov-internship { background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%); }
+        .cov-startup    { background:linear-gradient(135deg,#10b981 0%,#047857 100%); }
+        .cov-technology { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); }
+        .cov-career     { background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 100%); }
+        .cov-finance    { background:linear-gradient(135deg,#06b6d4 0%,#0284c7 100%); }
+        .cov-general    { background:linear-gradient(135deg,#64748b 0%,#475569 100%); }
+
+        /* decorative circle pattern */
+        .news-cover-ph::before {
+            content:''; position:absolute;
+            width:130px; height:130px; border-radius:50%;
+            background:rgba(255,255,255,.08);
+            bottom:-30px; right:-30px;
+        }
+        .news-cover-ph::after {
+            content:''; position:absolute;
+            width:80px; height:80px; border-radius:50%;
+            background:rgba(255,255,255,.06);
+            top:-15px; left:-15px;
+        }
+        .cover-ph-icon {
+            font-size:2.8rem; color:rgba(255,255,255,.55);
+            position:relative; z-index:1; margin-bottom:.35rem;
+        }
+        .cover-ph-label {
+            font-size:.7rem; font-weight:700; letter-spacing:.1em;
+            text-transform:uppercase; color:rgba(255,255,255,.6);
+            position:relative; z-index:1;
+        }
+
+        /* Source chip overlay on image */
+        .cover-source-chip {
+            position:absolute; bottom:8px; left:10px;
+            background:rgba(0,0,0,.55); color:#fff;
+            border-radius:9999px; padding:.2rem .65rem;
+            font-size:.68rem; font-weight:700;
+            letter-spacing:.04em; text-transform:uppercase;
+            backdrop-filter:blur(4px);
+        }
+
+        /* ── Card body ── */
+        .news-body { padding:1.2rem 1.35rem; flex:1; display:flex; flex-direction:column; }
+
+        .news-meta-top {
+            display:flex; align-items:center; gap:.45rem;
+            margin-bottom:.6rem; flex-wrap:wrap;
+        }
+        .cat-pill {
+            padding:.2rem .65rem; border-radius:9999px;
+            font-size:.68rem; font-weight:600;
+        }
+        .cat-hackathon  { background:#fef3c7; color:#92400e; }
+        .cat-internship { background:#dbeafe; color:#1e40af; }
+        .cat-startup    { background:#dcfce7; color:#166534; }
+        .cat-technology { background:#ede9fe; color:#5b21b6; }
+        .cat-career     { background:#f3e8ff; color:#6b21a8; }
+        .cat-finance    { background:#cffafe; color:#155e75; }
+        .cat-general    { background:#f1f5f9; color:#475569; }
+
+        .news-title {
+            font-size:.97rem; font-weight:700; color:#1e293b; line-height:1.45;
+            margin-bottom:.55rem;
+            display:-webkit-box; -webkit-line-clamp:2;
+            -webkit-box-orient:vertical; overflow:hidden;
+        }
+        .news-desc {
+            font-size:.83rem; color:#64748b; line-height:1.6;
+            margin-bottom:.85rem; flex:1;
+            display:-webkit-box; -webkit-line-clamp:3;
+            -webkit-box-orient:vertical; overflow:hidden;
+        }
+        .news-stats-row {
+            display:flex; gap:1rem;
+            font-size:.78rem; color:#94a3b8; margin-bottom:.85rem;
+        }
+        .nsr-item { display:flex; align-items:center; gap:.3rem; }
+
+        .news-footer {
+            display:flex; justify-content:space-between; align-items:center;
+            padding-top:.85rem; border-top:1px solid #e2e8f0;
+        }
+        .news-author { font-size:.78rem; color:#94a3b8; }
+        .news-author span { color:#475569; font-weight:600; }
+
+        .news-read-btn {
+            display:inline-flex; align-items:center; gap:.35rem;
+            padding:.4rem .9rem;
+            background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            color:#fff; border-radius:.5rem;
+            font-size:.75rem; font-weight:600;
+            text-decoration:none; border:none;
+            transition:transform .2s,box-shadow .2s;
+        }
+        .news-read-btn:hover {
+            transform:translateY(-2px);
+            box-shadow:0 6px 16px -4px rgba(102,126,234,.4);
+        }
+
+        /* ── Skeleton ── */
+        .skeleton-card {
+            background:#fff; border:1px solid #e2e8f0; border-radius:1rem; overflow:hidden;
+        }
+        .skel {
+            background:linear-gradient(90deg,#f0f4f8 25%,#e2e8f0 50%,#f0f4f8 75%);
+            background-size:200% 100%; animation:shimmer 1.4s infinite;
+        }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .skel-img  { height:170px; }
+        .skel-body { padding:1.2rem; display:flex; flex-direction:column; gap:.7rem; }
+        .skel-line { height:.8rem; border-radius:.35rem; }
+        .w30{width:30%} .w60{width:60%} .w80{width:80%} .w90{width:90%} .w50{width:50%}
+
+        /* ── Error / Empty ── */
+        .news-error {
+            background:#fee2e2; border:1px solid #fecaca; color:#991b1b;
+            border-radius:.75rem; padding:1rem 1.5rem; margin-bottom:1.5rem;
+            display:none; align-items:center; gap:.75rem;
+        }
+        .news-empty {
+            grid-column:1/-1; text-align:center; padding:4rem 2rem; color:#64748b;
+        }
+        .news-empty i  { font-size:3rem; margin-bottom:1rem; color:#cbd5e1; display:block; }
+        .news-empty h3 { font-size:1.25rem; font-weight:600; color:#374151; margin-bottom:.5rem; }
+
+        .load-more-wrap { text-align:center; margin:.5rem 0 2rem; }
+
+        @media (max-width:768px) {
+            .news-grid { grid-template-columns:1fr; }
+            .news-hero { padding:1.75rem; }
+            .news-hero-text h1 { font-size:1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h2><i class="fas fa-graduation-cap"></i> Campus2Career</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="/student-dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/student-internships"><i class="fas fa-briefcase"></i> <span>Browse Jobs</span></a></li>
+                    <li><a href="/student-applications"><i class="fas fa-file-alt"></i> <span>My Applications</span></a></li>
+                    <li><a href="/student-profile"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+                    <li><a href="/news" class="active"><i class="fas fa-newspaper"></i> <span>News</span></a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Student</span>
+                </div>
+                <a href="/student-dashboard" class="btn-secondary small">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3>Navigation</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="/student-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="/student-internships"><i class="fas fa-search"></i> Find Internships</a></li>
+                        <li><a href="/student-applications"><i class="fas fa-file-alt"></i> My Applications</a></li>
+                        <li><a href="/student-profile"><i class="fas fa-user-edit"></i> My Profile</a></li>
+                        <li><a href="/blogs"><i class="fas fa-rss"></i> Tech Blogs</a></li>
+                        <li><a href="/news" class="active"><i class="fas fa-newspaper"></i> Industry News</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-section">
+                    <h3>Quick Topics</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="#" onclick="quickSearch('internship hiring 2025');return false;"><i class="fas fa-briefcase"></i> Internships</a></li>
+                        <li><a href="#" onclick="quickSearch('hackathon 2025');return false;"><i class="fas fa-trophy"></i> Hackathons</a></li>
+                        <li><a href="#" onclick="quickSearch('startup funding');return false;"><i class="fas fa-rocket"></i> Startups</a></li>
+                        <li><a href="#" onclick="quickSearch('AI machine learning');return false;"><i class="fas fa-brain"></i> AI & ML</a></li>
+                        <li><a href="#" onclick="quickSearch('software engineer jobs');return false;"><i class="fas fa-code"></i> Tech Jobs</a></li>
+                        <li><a href="#" onclick="quickSearch('career advice students');return false;"><i class="fas fa-graduation-cap"></i> Career Tips</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-section">
+                    <h3>Data Source</h3>
+                    <div class="quick-stats">
+                        <div class="quick-stat">
+                            <span class="stat-label">Provider</span>
+                            <span class="stat-number" style="font-size:.8rem;">Hacker News</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="stat-label">API Key</span>
+                            <span class="stat-number" style="font-size:.8rem;color:#10b981;">Not needed</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="help-card">
+                    <h4><i class="fas fa-lightbulb"></i> Stay Informed</h4>
+                    <p>Follow industry news to ace interviews and spot opportunities!</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h1><i class="fas fa-newspaper" style="color:#667eea;"></i> Industry News</h1>
+                    <p>Internships, hackathons, startups &amp; tech trends — all in one place</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="refreshNews()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="news-hero">
+                <div class="news-hero-text">
+                    <h1>Your Career Intelligence Feed</h1>
+                    <p>Real-time stories about internships, hackathons, startups and the tech industry — powered by Hacker News.</p>
+                </div>
+                <div class="news-hero-icon"><i class="fas fa-satellite-dish"></i></div>
+            </div>
+
+            <div class="hackathon-callout">
+                <i class="fas fa-trophy"></i>
+                <div>
+                    <h3>Looking for Hackathons?</h3>
+                    <p>Use the filter below or the sidebar link to find the latest competitions and coding events.</p>
+                </div>
+                <button class="btn-primary small" onclick="quickSearch('hackathon 2025')" style="margin-left:auto;">
+                    <i class="fas fa-search"></i> Find Hackathons
+                </button>
+            </div>
+
+            <div class="news-stats" id="newsStats" style="display:none;">
+                <div class="news-stat"><i class="fas fa-layer-group"></i><span>Showing <strong id="statCount">0</strong> stories</span></div>
+                <div class="news-stat"><i class="fas fa-tag"></i><span>Topic: <strong id="statTopic">Latest</strong></span></div>
+                <div class="news-stat"><i class="fas fa-check-circle"></i><span>Source: <strong>Hacker News</strong></span></div>
+            </div>
+
+            <div class="news-toolbar">
+                <div class="search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search internships, hackathons, startups…">
+                </div>
+                <div class="filter-tags">
+                    <button class="filter-btn active" data-q="tech hiring software engineer startup">Latest</button>
+                    <button class="filter-btn" data-q="internship hiring 2025">Internships</button>
+                    <button class="filter-btn" data-q="hackathon">Hackathons</button>
+                    <button class="filter-btn" data-q="startup funding">Startups</button>
+                    <button class="filter-btn" data-q="AI machine learning">AI &amp; ML</button>
+                    <button class="filter-btn" data-q="career jobs">Careers</button>
+                    <button class="filter-btn" data-q="open source">Open Source</button>
+                </div>
+            </div>
+
+            <div class="news-error" id="errorBanner">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorMsg">Something went wrong.</span>
+            </div>
+
+            <div class="news-grid" id="newsGrid"></div>
+
+            <div class="load-more-wrap">
+                <button class="btn-primary" id="loadMoreBtn" style="display:none;" onclick="loadMore()">
+                    <i class="fas fa-chevron-down"></i> Load More Stories
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const HN_ALGOLIA  = 'https://hn.algolia.com/api/v1';
+        const HN_FIREBASE = 'https://hacker-news.firebaseio.com/v0';
+        const PER_PAGE    = 12;
+
+        // Curated Unsplash images per category (no API key needed — direct photo URLs)
+        const COVER_IMGS = {
+            hackathon:  [
+                'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&q=80',
+                'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80',
+                'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=600&q=80'
+            ],
+            internship: [
+                'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=80',
+                'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80',
+                'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&q=80'
+            ],
+            startup: [
+                'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&q=80',
+                'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80',
+                'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&q=80'
+            ],
+            technology: [
+                'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80',
+                'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=80',
+                'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80'
+            ],
+            career: [
+                'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80',
+                'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&q=80',
+                'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80'
+            ],
+            finance: [
+                'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80',
+                'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=600&q=80',
+                'https://images.unsplash.com/photo-1565514020179-026b92b84bb6?w=600&q=80'
+            ],
+            general: [
+                'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=80',
+                'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=600&q=80',
+                'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=600&q=80'
+            ]
+        };
+
+        const catLabel  = { hackathon:'🏆 Hackathon', internship:'🎓 Internship', startup:'🚀 Startup', technology:'💻 Technology', career:'💼 Career', finance:'💰 Finance', general:'📰 News' };
+        const catFaIcon = { hackathon:'fa-trophy', internship:'fa-graduation-cap', startup:'fa-rocket', technology:'fa-microchip', career:'fa-briefcase', finance:'fa-chart-line', general:'fa-newspaper' };
+
+        let currentQuery = 'tech hiring software engineer startup';
+        let currentPage  = 0;
+        let isLoading    = false;
+        let totalLoaded  = 0;
+        let imgCounter   = 0;   // cycles through cover images
+
+        const grid        = document.getElementById('newsGrid');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const statsBar    = document.getElementById('newsStats');
+
+        showSkeletons(6);
+        fetchNews(currentQuery, 0, false);
+
+        /* ── FETCH ── */
+        async function fetchNews(query, page=0, append=false) {
+            if (isLoading) return;
+            isLoading = true;
+            document.getElementById('errorBanner').style.display = 'none';
+            if (!append) showSkeletons(6);
+
+            try {
+                const url = `${HN_ALGOLIA}/search?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=${PER_PAGE}&page=${page}&numericFilters=num_comments%3E0`;
+                const res  = await fetch(url);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+
+                clearSkeletons();
+                const stories = (data.hits||[]).map(mapHit).filter(s=>s.title&&s.url);
+                if (!append) { totalLoaded=0; grid.innerHTML=''; }
+                renderCards(stories);
+                totalLoaded += stories.length;
+                updateStats(query, totalLoaded);
+
+                const hasMore = (page+1)<(data.nbPages||1) && stories.length===PER_PAGE;
+                loadMoreBtn.style.display = hasMore ? 'inline-flex' : 'none';
+            } catch(err) {
+                clearSkeletons();
+                showError('Could not reach Hacker News. Loading top stories…');
+                fetchTopHN(append);
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        async function fetchTopHN(append=false) {
+            try {
+                const ids = (await (await fetch(`${HN_FIREBASE}/topstories.json`)).json()).slice(0,20);
+                const raw = await Promise.all(ids.map(id=>fetch(`${HN_FIREBASE}/item/${id}.json`).then(r=>r.json()).catch(()=>null)));
+                const stories = raw.filter(Boolean).map(s=>({
+                    id:s.id, title:s.title||'Untitled',
+                    url:s.url||`https://news.ycombinator.com/item?id=${s.id}`,
+                    description:`${s.score||0} points · ${s.descendants||0} comments`,
+                    source:'Hacker News', author:s.by||'unknown',
+                    publishedAt:new Date((s.time||0)*1000).toISOString(),
+                    score:s.score||0, comments:s.descendants||0,
+                    category:categorise(s.title||'')
+                }));
+                clearSkeletons();
+                if (!append) grid.innerHTML='';
+                renderCards(stories);
+                totalLoaded = stories.length;
+                updateStats('Top Stories', totalLoaded);
+                loadMoreBtn.style.display = 'none';
+            } catch {
+                clearSkeletons();
+                showError('Unable to load news. Please try again later.');
+            }
+        }
+
+        /* ── MAP HIT ── */
+        function mapHit(h) {
+            return {
+                id:h.objectID, title:h.title||'',
+                url:h.url||`https://news.ycombinator.com/item?id=${h.objectID}`,
+                description: h.story_text
+                    ? h.story_text.replace(/<[^>]*>/g,'').substring(0,180)+'…'
+                    : `${h.points||0} points · ${h.num_comments||0} comments`,
+                source:'Hacker News', author:h.author||'unknown',
+                publishedAt:h.created_at||new Date().toISOString(),
+                score:h.points||0, comments:h.num_comments||0,
+                category:categorise(h.title||'')
+            };
+        }
+
+        function categorise(t) {
+            const s = t.toLowerCase();
+            if (/hackathon|competition|contest|devfest/.test(s))         return 'hackathon';
+            if (/intern|internship|placement|campus recruit/.test(s))    return 'internship';
+            if (/startup|funding|raised|seed|series [a-e]/.test(s))     return 'startup';
+            if (/\bai\b|machine learning|gpt|llm|deep learning/.test(s)) return 'technology';
+            if (/job|hiring|career|recruit|employ/.test(s))              return 'career';
+            if (/stock|market|ipo|finance|invest/.test(s))               return 'finance';
+            return 'general';
+        }
+
+        /* ── RENDER ── */
+        function renderCards(stories) {
+            if (!stories.length && !totalLoaded) {
+                grid.innerHTML=`<div class="news-empty"><i class="fas fa-search-minus"></i><h3>No stories found</h3><p>Try a different topic or keyword.</p></div>`;
+                return;
+            }
+            stories.forEach(s => grid.appendChild(buildCard(s)));
+        }
+
+        function buildCard(s) {
+            const card = document.createElement('div');
+            card.className = 'news-card fade-in';
+
+            const cat    = s.category || 'general';
+            const domain = (()=>{ try{return new URL(s.url).hostname.replace('www.','')}catch{return 'ycombinator.com'} })();
+
+            // Pick a curated cover image for this category
+            const imgs    = COVER_IMGS[cat] || COVER_IMGS.general;
+            const imgUrl  = imgs[imgCounter % imgs.length];
+            imgCounter++;
+
+            card.innerHTML = `
+                <div class="news-cover-wrap">
+                    <img class="news-cover-img"
+                         src="${imgUrl}"
+                         alt="${esc(cat)} illustration"
+                         loading="lazy"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="news-cover-ph cov-${cat}" style="display:none;position:absolute;inset:0;">
+                        <i class="fas ${catFaIcon[cat]||'fa-newspaper'} cover-ph-icon"></i>
+                        <span class="cover-ph-label">${cat}</span>
+                    </div>
+                    <span class="cover-source-chip">${esc(s.source)}</span>
+                </div>
+                <div class="news-body">
+                    <div class="news-meta-top">
+                        <span class="cat-pill cat-${cat}">${catLabel[cat]||'📰 News'}</span>
+                    </div>
+                    <div class="news-title">${esc(s.title)}</div>
+                    <div class="news-desc">${esc(s.description)}</div>
+                    <div class="news-stats-row">
+                        <span class="nsr-item">🔥 ${s.score} pts</span>
+                        <span class="nsr-item">💬 ${s.comments}</span>
+                        <span class="nsr-item"><i class="fas fa-link"></i> ${esc(domain)}</span>
+                    </div>
+                    <div class="news-footer">
+                        <div class="news-author">by <span>${esc(s.author)}</span> · ${relTime(s.publishedAt)}</div>
+                        <a href="${esc(s.url)}" target="_blank" rel="noopener" class="news-read-btn">
+                            <i class="fas fa-external-link-alt"></i> Read
+                        </a>
+                    </div>
+                </div>`;
+
+            return card;
+        }
+
+        /* ── SKELETONS ── */
+        function showSkeletons(n) {
+            grid.innerHTML='';
+            for(let i=0;i<n;i++) grid.innerHTML+=`
+                <div class="skeleton-card">
+                    <div class="skel skel-img"></div>
+                    <div class="skel-body">
+                        <div class="skel skel-line w30"></div>
+                        <div class="skel skel-line w90"></div>
+                        <div class="skel skel-line w80"></div>
+                        <div class="skel skel-line w50"></div>
+                    </div>
+                </div>`;
+        }
+        function clearSkeletons() { document.querySelectorAll('.skeleton-card').forEach(el=>el.remove()); }
+
+        /* ── STATS / ERROR ── */
+        function updateStats(q,c) {
+            document.getElementById('statCount').textContent = c;
+            document.getElementById('statTopic').textContent = q.length>28?q.substring(0,28)+'…':q;
+            statsBar.style.display='flex';
+        }
+        function showError(msg) {
+            document.getElementById('errorMsg').textContent=msg;
+            document.getElementById('errorBanner').style.display='flex';
+            setTimeout(()=>{document.getElementById('errorBanner').style.display='none';},7000);
+        }
+
+        /* ── FILTERS ── */
+        document.querySelectorAll('.filter-btn').forEach(btn=>{
+            btn.addEventListener('click',()=>{
+                document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+                currentQuery=btn.dataset.q; currentPage=0;
+                document.getElementById('searchInput').value='';
+                imgCounter=0;
+                fetchNews(currentQuery,0,false);
+            });
+        });
+
+        /* ── SEARCH ── */
+        let st;
+        document.getElementById('searchInput').addEventListener('input',e=>{
+            clearTimeout(st);
+            const q=e.target.value.trim();
+            st=setTimeout(()=>{
+                if(q.length>2){ currentQuery=q;currentPage=0;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));imgCounter=0;fetchNews(q,0,false); }
+                else if(!q) fetchNews(currentQuery,0,false);
+            },450);
+        });
+        document.getElementById('searchInput').addEventListener('keydown',e=>{
+            if(e.key==='Enter'){clearTimeout(st);const q=e.target.value.trim();if(q){currentQuery=q;currentPage=0;imgCounter=0;fetchNews(q,0,false);}}
+        });
+
+        function quickSearch(q){ currentQuery=q;currentPage=0;imgCounter=0;document.getElementById('searchInput').value=q;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));fetchNews(q,0,false);window.scrollTo({top:0,behavior:'smooth'}); }
+        function loadMore(){ currentPage++;fetchNews(currentQuery,currentPage,true); }
+        function refreshNews(){ currentPage=0;imgCounter=0;fetchNews(currentQuery,0,false); }
+
+        /* ── HELPERS ── */
+        function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+        function relTime(iso){const d=Math.floor((Date.now()-new Date(iso))/1000);if(d<60)return'just now';if(d<3600)return`${Math.floor(d/60)}m ago`;if(d<86400)return`${Math.floor(d/3600)}h ago`;if(d<604800)return`${Math.floor(d/86400)}d ago`;return new Date(iso).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}
+    </script>
+</body>
+</html>

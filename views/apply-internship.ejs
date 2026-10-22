@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for <%= internship.title %> - Campus2Career</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h2><i class="fas fa-graduation-cap"></i> Campus2Career</h2>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="/student-dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/student-internships"><i class="fas fa-briefcase"></i> <span>Browse Jobs</span></a></li>
+                    <li><a href="/student-applications"><i class="fas fa-file-alt"></i> <span>My Applications</span></a></li>
+                    <li><a href="/student-profile"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span><%= user.email %></span>
+                </div>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-secondary small">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container" style="background-color: white;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3>Navigation</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="/student-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="/student-internships"><i class="fas fa-search"></i> Find Internships</a></li>
+                        <li><a href="/student-applications"><i class="fas fa-file-alt"></i> My Applications</a></li>
+                        <li><a href="/student-profile"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+                        <li><a href="/blogs"> <i class="fas fa-lightbulb"></i>Tech Blogs</a></li>
+                        <li><a href="/news"> <i class="fas fa-newspaper"></i>Latest News</a></li> 
+        
+                    </ul>
+                </div>
+
+                <div class="help-card">
+                    <h4>Application Tips</h4>
+                    <p>Customize your cover letter for each application!</p>
+                    <p>Make sure your profile is complete before applying.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Back Button -->
+            <div class="header-with-back">
+                <a href="/student-internships/<%= internship.id %>" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Job Details
+                </a>
+            </div>
+
+            <!-- Application Form -->
+            <div class="form-container">
+                <div class="page-header">
+                    <h1><i class="fas fa-paper-plane"></i> Apply for <%= internship.title %></h1>
+                    <p>Complete your application below. Make sure all information is accurate.</p>
+                </div>
+
+                <!-- Job Summary -->
+                <div class="content-section" style="margin-bottom: 2rem;">
+                    <h3><i class="fas fa-briefcase"></i> Position Summary</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div class="info-row">
+                            <strong>Department:</strong> <%= internship.department %>
+                        </div>
+                        <div class="info-row">
+                            <strong>Location:</strong> <%= internship.location %>
+                        </div>
+                        <div class="info-row">
+                            <strong>Duration:</strong> <%= internship.duration %>
+                        </div>
+                        <div class="info-row">
+                            <strong>Stipend:</strong> <%= internship.stipend %>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="applicationForm" class="internship-form">
+                    <input type="hidden" name="internshipId" value="<%= internship.id %>">
+                    
+                    <!-- Personal Information -->
+                    <div class="content-section">
+                        <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="fullName">Full Name *</label>
+                                <input type="text" id="fullName" name="fullName" value="<%= profile.fullName || user.name || '' %>" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" value="<%= user.email %>" readonly>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" name="phone" value="<%= profile.phone || '' %>" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="university">University/College *</label>
+                                <input type="text" id="university" name="university" value="<%= profile.university || '' %>" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="major">Major/Field of Study *</label>
+                                <input type="text" id="major" name="major" value="<%= profile.major || '' %>" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="graduationYear">Expected Graduation Year *</label>
+                                <select id="graduationYear" name="graduationYear" required>
+                                    <option value="">Select Year</option>
+                                    <option value="2024" <%= profile.graduationYear === '2024' ? 'selected' : '' %>>2024</option>
+                                    <option value="2025" <%= profile.graduationYear === '2025' ? 'selected' : '' %>>2025</option>
+                                    <option value="2026" <%= profile.graduationYear === '2026' ? 'selected' : '' %>>2026</option>
+                                    <option value="2027" <%= profile.graduationYear === '2027' ? 'selected' : '' %>>2027</option>
+                                    <option value="2028" <%= profile.graduationYear === '2028' ? 'selected' : '' %>>2028</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+<br>
+                    <!-- Cover Letter -->
+                    <div class="content-section">
+                        <h3><i class="fas fa-file-alt"></i> Cover Letter *</h3>
+                        <div class="form-group full-width">
+                            <label for="coverLetter">Why are you interested in this position? What makes you a good fit?</label>
+                            <textarea id="coverLetter" name="coverLetter" rows="8" required 
+                                placeholder="Dear Hiring Manager,
+
+I am writing to express my strong interest in the <%= internship.title %> position at your <%= internship.department %> department. 
+
+Please explain:
+- Why you're interested in this specific role
+- What relevant skills/experience you have
+- How this internship aligns with your career goals
+- What you can contribute to the team
+
+Thank you for your consideration.
+
+Best regards,
+<%= user.name || 'Your Name' %>"></textarea>
+                        </div>
+                        <div style="text-align: right; font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">
+                            <span id="charCount">0</span> / 1000 characters recommended
+                        </div>
+                    </div>
+<br>
+                    <!-- Skills & Experience -->
+                    <div class="content-section">
+                        <h3><i class="fas fa-cogs"></i> Skills & Experience</h3>
+                        <div class="form-group">
+                            <label for="skills">Relevant Skills (comma separated)</label>
+                            <input type="text" id="skills" name="skills" value="<%= profile.skills ? profile.skills.join(', ') : '' %>" 
+                                   placeholder="e.g., JavaScript, Python, React, Communication, Teamwork">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="experience">Relevant Experience (Optional)</label>
+                            <textarea id="experience" name="experience" rows="4" 
+                                      placeholder="Briefly describe any relevant work experience, projects, or coursework..."><%= profile.experience || '' %></textarea>
+                        </div>
+                    </div>
+<br>
+                    <!-- Availability -->
+                    <div class="content-section">
+                        <h3><i class="fas fa-calendar"></i> Availability</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="startDate">Preferred Start Date</label>
+                                <input type="date" id="startDate" name="startDate" min="<%= new Date().toISOString().split('T')[0] %>">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="availability">Availability</label>
+                                <select id="availability" name="availability">
+                                    <option value="full-time">Full-time (40 hours/week)</option>
+                                    <option value="part-time">Part-time (20-30 hours/week)</option>
+                                    <option value="flexible">Flexible schedule</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+<br>
+                    <!-- Profile Completion Check -->
+                    <% if (!profile.phone || !profile.university || !profile.major) { %>
+                    <div class="alert error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Your profile is incomplete. Please <a href="/student-profile" target="_blank">update your profile</a> 
+                        with missing information to improve your application.
+                    </div>
+                    <% } %>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-paper-plane"></i> Submit Application
+                        </button>
+                        <a href="/student-internships/<%= internship.id %>" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Character counter for cover letter
+        const coverLetterTextarea = document.getElementById('coverLetter');
+        const charCountSpan = document.getElementById('charCount');
+        
+        function updateCharCount() {
+            const count = coverLetterTextarea.value.length;
+            charCountSpan.textContent = count;
+            
+            if (count > 1000) {
+                charCountSpan.style.color = '#ef4444';
+            } else if (count > 800) {
+                charCountSpan.style.color = '#f59e0b';
+            } else {
+                charCountSpan.style.color = '#64748b';
+            }
+        }
+        
+        coverLetterTextarea.addEventListener('input', updateCharCount);
+        updateCharCount(); // Initialize
+
+        // Handle form submission
+        document.getElementById('applicationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate required fields
+            const requiredFields = ['fullName', 'email', 'phone', 'university', 'major', 'graduationYear', 'coverLetter'];
+            let isValid = true;
+            
+            requiredFields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#ef4444';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#d1d5db';
+                }
+            });
+            
+            if (!isValid) {
+                showAlert('Please fill in all required fields.', 'error');
+                return;
+            }
+            
+            // Check cover letter length
+            if (coverLetterTextarea.value.length < 100) {
+                showAlert('Please write a more detailed cover letter (at least 100 characters).', 'error');
+                coverLetterTextarea.focus();
+                return;
+            }
+            
+            const formData = new FormData(this);
+            const applicationData = Object.fromEntries(formData.entries());
+            
+            try {
+                showLoading(this);
+                
+                const response = await fetch('/api/student/apply', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(applicationData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Application submitted successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/student-applications';
+                    }, 2000);
+                } else {
+                    showAlert(result.error || 'Error submitting application. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error submitting application. Please try again.', 'error');
+            } finally {
+                hideLoading(this);
+            }
+        });
+
+        // Utility functions
+        function showAlert(message, type) {
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                ${message}
+            `;
+            
+            const mainContent = document.querySelector('.main-content');
+            mainContent.insertBefore(alert, mainContent.firstChild);
+            
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        function showLoading(form) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.disabled = true;
+        }
+
+        function hideLoading(form) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Application';
+            submitBtn.disabled = false;
+        }
+    </script>
+</body>
+</html>
